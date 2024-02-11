@@ -1,0 +1,59 @@
+:root {
+    --header-background-color: aliceblue;
+}
+
+* {
+    font-family: Roboto, serif;
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+}
+
+.header {
+    padding: 0 2em;
+    min-height: 4em;
+    display: flex;
+    align-items: center;
+    background-color: var(--header-background-color);
+}
+
+.header > h1 {
+    font-size: 3em;
+}
+
+.main {
+    padding: 0 2em;
+}
+
+.section {
+    padding-bottom: 2em;
+}
+
+.section__header > h3 {
+    font-size: 2.5em;
+    margin: 0.5em 0;
+}
+
+.section__header > time {
+    font-size: 2em;
+}
+
+.section__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 2em;
+}
+
+.section__img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 2em;
+}
+
+.section__description {
+
+}
