@@ -1,0 +1,14 @@
+.header {
+  padding: 0 2em;
+  margin-bottom: 0.5em;
+  min-height: 8em;
+  display: flex;
+  align-items: center;
+  background: rgb(34,193,195);
+  background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(152,206,255,1) 100%);
+
+  h1 {
+    font-size: 3em;
+    color: ivory;
+  }
+}
