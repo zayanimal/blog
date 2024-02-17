@@ -12,7 +12,7 @@
     padding-bottom: 2em;
 
     h2 {
-      font-size: 3.5em;
+      font-size: 3em;
       margin: 0.5em 0;
     }
   }
@@ -25,11 +25,11 @@
   }
 
   &__description {
-    font-size: 1.5em;
     text-align: justify;
   }
 
   &__link {
+    font-size: 0.9em;
     margin-top: 2em;
     color: royalblue;
     text-decoration: underline;
@@ -50,6 +50,5 @@
   &__time {
     margin-top: 1em;
     padding-right: 1em;
-    font-family: Arial, Helvetica, sans-serif;
   }
 }

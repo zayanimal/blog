@@ -1,15 +1,16 @@
-* {
-    font-family: Roboto, serif;
-    font-size: inherit;
-}
-
 body {
     margin: 0;
     font-size: 16px;
     color: var(--text-color);
 }
 
+* {
+    font-family: "UbuntuMono", serif;
+    font-size: inherit;
+}
+
 @import "colors";
+@import "fonts";
 @import "header";
 @import "main";
 @import "section";

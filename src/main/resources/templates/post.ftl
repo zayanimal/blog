@@ -4,13 +4,11 @@
 <html lang="ru">
 <#include 'head.ftl'>
 
-<body>
+    <body>
     <#include 'header.ftl'>
 
-    <main class="main">
-        <#list posts as post>
+        <main class="main">
             <@s.section post.title post.image post.text post.link post.date />
-        </#list>
-    </main>
+        </main>
     </body>
 </html>
