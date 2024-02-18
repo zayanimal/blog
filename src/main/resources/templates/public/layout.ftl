@@ -5,7 +5,7 @@
             <title>Это мой блог</title>
             <meta charset="UTF-8">
             <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
-            <link type="text/css" rel="stylesheet" href="/css/public/index.css">
+            <link type="text/css" rel="stylesheet" href="/bundle/public/index.css">
         </head>
         <body>
             <header class="header">

@@ -25,6 +25,7 @@ data/
 /nbproject/private/
 /nbbuild/
 /dist/
+bundle/
 /nbdist/
 /.nb-gradle/
 build/

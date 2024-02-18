@@ -5,7 +5,7 @@
             <title>Мой профиль</title>
             <meta charset="UTF-8">
             <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
-            <link type="text/css" rel="stylesheet" href="/css/admin/index.css">
+            <link type="text/css" rel="stylesheet" href="/bundle/admin/index.css">
         </head>
         <body>
             <header class="header">
@@ -16,6 +16,6 @@
                 <#nested>
             </main>
         </body>
-        <script src="/js/admin/index.mjs"></script>
+        <script src="/bundle/admin/index.js"></script>
     </html>
 </#macro>
