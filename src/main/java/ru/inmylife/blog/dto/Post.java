@@ -7,6 +7,8 @@ import lombok.Getter;
 @Builder
 public class Post {
 
+    private Integer id;
+
     private String title;
 
     private String image;

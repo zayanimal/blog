@@ -9,8 +9,8 @@ body {
     font-size: inherit;
 }
 
-@import "colors";
-@import "fonts";
+@import "css/common/colors";
+@import "css/common/fonts";
 @import "header";
 @import "main";
 @import "section";

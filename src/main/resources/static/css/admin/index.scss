@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+* {
+  font-family: "UbuntuMono", serif;
+  font-size: inherit;
+}
+
+@import "css/common/colors";
+@import "css/common/fonts";
+@import "header";
