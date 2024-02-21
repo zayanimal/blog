@@ -4,8 +4,8 @@
         <head>
             <title>Мой профиль</title>
             <meta charset="UTF-8">
-            <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
-            <link type="text/css" rel="stylesheet" href="/bundle/admin/index.css">
+            <link rel="icon" type="image/x-icon" href="/asset/favicon.ico">
+            <link type="text/css" rel="stylesheet" href="/admin/index.css">
         </head>
         <body>
             <header class="header">
@@ -16,6 +16,6 @@
                 <#nested>
             </main>
         </body>
-        <script src="/bundle/admin/index.js"></script>
+        <script src="/admin/index.js"></script>
     </html>
 </#macro>

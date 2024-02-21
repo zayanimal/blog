@@ -4,8 +4,8 @@
         <head>
             <title>Это мой блог</title>
             <meta charset="UTF-8">
-            <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
-            <link type="text/css" rel="stylesheet" href="/bundle/public/index.css">
+            <link rel="icon" type="image/x-icon" href="/asset/favicon.ico">
+            <link type="text/css" rel="stylesheet" href="/public/index.css">
         </head>
         <body>
             <header class="header">
