@@ -11,8 +11,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'static'),
-        filename: '[name].js',
-        clean: true
+        filename: '[name].js'
     },
     module: {
         rules: [
