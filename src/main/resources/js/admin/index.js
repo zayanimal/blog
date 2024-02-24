@@ -3,7 +3,7 @@ import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import SimpleImage from '@editorjs/image';
 import Quote from '@editorjs/quote';
-import LinkTool from '@editorjs/link'
+import LinkTool from '@editorjs/link';
 import '../../css/admin/index.scss';
 
 const editor = new EditorJS({
@@ -19,7 +19,12 @@ const editor = new EditorJS({
         },
         image: {
             class: SimpleImage,
-            inlineToolbar: ['link']
+            inlineToolbar: ['link'],
+            config: {
+                endpoints: {
+                    byFile: '/upload'
+                }
+            }
         },
         quote: {
             class: Quote,
@@ -30,4 +35,12 @@ const editor = new EditorJS({
             inlineToolbar: ['link']
         }
     }
+});
+
+const btn = document.getElementById("save");
+
+btn.addEventListener('click', () => {
+    editor.save().then((res) => {
+        console.log(res);
+    })
 });
