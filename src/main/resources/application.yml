@@ -17,7 +17,7 @@ spring:
     cache: false
     suffix: .ftl
 
-yandex-disk-client:
+disk-client:
   url: ${YANDEX_DISK_URL}
   token: ${YANDEX_DISK_TOKEN}
   path: "disk:/Приложения/blog/"

@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties("yandex-disk-client")
-public class YandexDiskClientProperties {
+@ConfigurationProperties("disk-client")
+public class DiskClientProperties {
 
     private String url;
 

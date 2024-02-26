@@ -5,28 +5,34 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import ru.inmylife.blog.service.HeaderService;
-import ru.inmylife.blog.service.UploadLinkService;
-import ru.inmylife.blog.service.UploadService;
-import ru.inmylife.blog.service.impl.HeaderServiceImpl;
-import ru.inmylife.blog.service.impl.UploadLinkServiceImpl;
-import ru.inmylife.blog.service.impl.UploadServiceImpl;
+import ru.inmylife.blog.service.disk.*;
+import ru.inmylife.blog.service.disk.impl.*;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties({ YandexDiskClientProperties.class })
-public class YandexDiskClientConfiguration {
+@EnableConfigurationProperties({ DiskClientProperties.class })
+public class DiskClientConfiguration {
 
-    private final YandexDiskClientProperties properties;
+    private final DiskClientProperties properties;
 
     @Bean
-    public UploadLinkService uploadLinkService() {
-        return new UploadLinkServiceImpl(restTemplate(), headerService(), properties);
+    public GetUploadLinkService uploadLinkService() {
+        return new GetGetUploadLinkServiceImpl(restTemplate(), headerService(), properties);
     }
 
     @Bean
     public UploadService uploadService() {
         return new UploadServiceImpl(restTemplate(), headerService());
+    }
+
+    @Bean
+    public PublishService publishService() {
+        return new PublishServiceImpl(restTemplate(), headerService(), properties);
+    }
+
+    @Bean
+    public LinkService linkService() {
+        return new LinkServiceImpl(restTemplate(), headerService(), properties);
     }
 
     @Bean

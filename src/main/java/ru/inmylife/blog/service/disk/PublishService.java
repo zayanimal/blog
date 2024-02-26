@@ -1,8 +1,8 @@
-package ru.inmylife.blog.service;
+package ru.inmylife.blog.service.disk;
 
 import ru.inmylife.blog.dto.upload.DiskRs;
 
 public interface PublishService {
 
-    DiskRs publish(String path);
+    void publish(DiskRs diskRs);
 }

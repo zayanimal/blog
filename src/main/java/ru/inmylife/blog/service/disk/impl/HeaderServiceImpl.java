@@ -1,20 +1,20 @@
-package ru.inmylife.blog.service.impl;
+package ru.inmylife.blog.service.disk.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import ru.inmylife.blog.config.YandexDiskClientProperties;
-import ru.inmylife.blog.service.HeaderService;
+import ru.inmylife.blog.config.DiskClientProperties;
+import ru.inmylife.blog.service.disk.HeaderService;
 
 @RequiredArgsConstructor
 public class HeaderServiceImpl implements HeaderService {
 
-    private final YandexDiskClientProperties properties;
+    private final DiskClientProperties properties;
 
     @Override
     public HttpEntity<String> getHttpEntity() {
-        return new HttpEntity<>("body", getHttpHeaders());
+        return new HttpEntity<>(getHttpHeaders());
     }
 
     @Override

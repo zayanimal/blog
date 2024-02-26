@@ -1,4 +1,4 @@
-package ru.inmylife.blog.service;
+package ru.inmylife.blog.service.disk;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

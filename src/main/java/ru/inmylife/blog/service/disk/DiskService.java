@@ -1,8 +1,8 @@
-package ru.inmylife.blog.service;
+package ru.inmylife.blog.service.disk;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public interface YandexDiskService {
+public interface DiskService {
 
     String uploadAndGetUrl(MultipartFile file);
 }

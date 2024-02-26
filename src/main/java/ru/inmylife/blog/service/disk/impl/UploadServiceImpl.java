@@ -1,4 +1,4 @@
-package ru.inmylife.blog.service.impl;
+package ru.inmylife.blog.service.disk.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -6,8 +6,8 @@ import lombok.val;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import ru.inmylife.blog.dto.upload.DiskRs;
-import ru.inmylife.blog.service.HeaderService;
-import ru.inmylife.blog.service.UploadService;
+import ru.inmylife.blog.service.disk.HeaderService;
+import ru.inmylife.blog.service.disk.UploadService;
 
 import static org.springframework.http.HttpMethod.PUT;
 
@@ -26,6 +26,6 @@ public class UploadServiceImpl implements UploadService {
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Не удалось загрузить файл");
-        };
+        }
     }
 }

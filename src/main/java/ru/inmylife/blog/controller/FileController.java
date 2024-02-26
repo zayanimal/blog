@@ -2,19 +2,20 @@ package ru.inmylife.blog.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.inmylife.blog.dto.upload.FileRs;
 import ru.inmylife.blog.dto.upload.ImageRs;
-import ru.inmylife.blog.service.YandexDiskService;
+import ru.inmylife.blog.service.disk.DiskService;
 
 @RestController
 @RequiredArgsConstructor
 public class FileController {
 
-    private final YandexDiskService yandexDiskService;
+    private final DiskService diskService;
 
-    @ResponseBody
     @PostMapping(
         value = "upload",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -22,7 +23,7 @@ public class FileController {
     public ImageRs uploadFile(@RequestParam("image") MultipartFile file) {
         return ImageRs.builder()
             .success(1)
-            .file(FileRs.builder().url(yandexDiskService.uploadAndGetUrl(file)).build())
+            .file(FileRs.builder().url(diskService.uploadAndGetUrl(file)).build())
             .build();
     }
 }

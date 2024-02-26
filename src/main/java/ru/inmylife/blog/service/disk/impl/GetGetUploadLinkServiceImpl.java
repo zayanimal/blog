@@ -1,15 +1,14 @@
-package ru.inmylife.blog.service.impl;
+package ru.inmylife.blog.service.disk.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import ru.inmylife.blog.config.YandexDiskClientProperties;
+import ru.inmylife.blog.config.DiskClientProperties;
 import ru.inmylife.blog.dto.upload.DiskRs;
-import ru.inmylife.blog.service.HeaderService;
-import ru.inmylife.blog.service.UploadLinkService;
+import ru.inmylife.blog.service.disk.HeaderService;
+import ru.inmylife.blog.service.disk.GetUploadLinkService;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,30 +16,30 @@ import java.util.UUID;
 import static org.springframework.http.HttpMethod.GET;
 
 @RequiredArgsConstructor
-public class UploadLinkServiceImpl implements UploadLinkService {
+public class GetGetUploadLinkServiceImpl implements GetUploadLinkService {
 
     private final RestTemplate restTemplate;
 
     private final HeaderService headerService;
 
-    private final YandexDiskClientProperties properties;
+    private final DiskClientProperties properties;
 
     @Override
     public DiskRs getUploadLink(MultipartFile file) {
-        val path = getUploadPath(file);
-        val params = new HashMap<String, String>();
-        params.put("path", path);
-        params.put("fields", "name");
-        params.put("overwrite", "true");
+        try {
+            val path = getUploadPath(file);
+            val response = Optional
+                .ofNullable(restTemplate
+                    .exchange(getUploadUrl(path), GET, headerService.getHttpEntity(), DiskRs.class)
+                    .getBody())
+                .orElseThrow(() -> new RuntimeException("Ссылка не пришла"));
 
-        val response = Optional
-            .ofNullable(restTemplate
-                .exchange(getUploadUrl(), GET, headerService.getHttpEntity(), DiskRs.class, params)
-                .getBody())
-            .orElseThrow(() -> new RuntimeException("Ссылка не пришла"));
-        response.setPath(path);
+            response.setPath(path);
 
-        return response;
+            return response;
+        } catch (Exception e) {
+            throw new RuntimeException("Не удалось получить ссылку для загрузки", e);
+        }
     }
 
     private String getUploadPath(MultipartFile file) {
@@ -61,7 +60,9 @@ public class UploadLinkServiceImpl implements UploadLinkService {
         throw new RuntimeException("Имя файла не найдено");
     }
 
-    private String getUploadUrl() {
-        return properties.getUrl().concat("/upload?path={path}&fields={fields}&overwrite={overwrite}");
+    private String getUploadUrl(String path) {
+        return properties.getUrl()
+            .concat("/upload?fields=name&overwrite=true&path=")
+            .concat(path);
     }
 }
