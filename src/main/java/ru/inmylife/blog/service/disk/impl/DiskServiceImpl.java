@@ -28,7 +28,7 @@ public class DiskServiceImpl implements DiskService {
 
             return linkService.getFileLink(uploadLinkRs);
         } catch (Exception e) {
-            throw new RuntimeException("Произошла ошибка транзакции загрузки файла");
+            throw new RuntimeException("Произошла ошибка транзакции загрузки файла", e);
         }
     }
 }
