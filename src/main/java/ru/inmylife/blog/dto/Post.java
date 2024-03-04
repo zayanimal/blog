@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class Post {
 
-    private Integer id;
+    private Long id;
 
     private String title;
 

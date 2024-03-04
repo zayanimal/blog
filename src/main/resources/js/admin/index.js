@@ -3,6 +3,7 @@ import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import LinkTool from '@editorjs/link';
+import Delimiter from '@editorjs/delimiter';
 
 import Image from "./image";
 
@@ -35,16 +36,27 @@ const editor = new EditorJS({
         linkTool: {
             class: LinkTool,
             inlineToolbar: ['link']
-        }
+        },
+        delimiter: Delimiter
     }
 });
 
 const btn = document.getElementById("save");
 
 btn.addEventListener('click', () => {
-    editor.save().then((res) => {
-        console.log(res);
-    })
+    editor.save()
+        .then((res) => {
+            return fetch('/post/1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(res)
+            })
+        })
+        .then(() => {
+            console.log('Пост сохранён')
+        })
 });
 
 const renderButton = document.getElementById("render");
