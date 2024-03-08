@@ -10,20 +10,32 @@ import ru.inmylife.blog.service.PostService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/post")
 public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/{id}")
+    @GetMapping
+    public String posts(Model model) {
+        model.addAttribute("posts", postService.getPosts());
+        return "public/index";
+    }
+
+    @GetMapping("/post/{id}")
     public String post(@PathVariable("id") Long id, Model model) {
         model.addAttribute("post", postService.findPost(id));
         return "public/post";
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<String> save(@PathVariable("id") Long id, @RequestBody Post post) {
-        postService.saveOrUpdate(id, post);
+    @PostMapping("/post")
+    public ResponseEntity<String> create(@RequestBody Post post) {
+        postService.create(post);
+
+        return ResponseEntity.ok("OK");
+    }
+
+    @PostMapping("/post/{id}")
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Post post) {
+        postService.update(id, post);
 
         return ResponseEntity.ok("OK");
     }

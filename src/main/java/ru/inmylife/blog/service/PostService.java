@@ -11,5 +11,7 @@ public interface PostService {
 
     List<Post> getPosts();
 
-    void saveOrUpdate(Long id, Post post);
+    void create(Post post);
+
+    void update(Long id, Post post);
 }

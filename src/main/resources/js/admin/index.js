@@ -46,16 +46,13 @@ const btn = document.getElementById("save");
 btn.addEventListener('click', () => {
     editor.save()
         .then((res) => {
-            return fetch('/post/1', {
+            return fetch('/post', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(res)
             })
-        })
-        .then(() => {
-            console.log('Пост сохранён')
         })
 });
 

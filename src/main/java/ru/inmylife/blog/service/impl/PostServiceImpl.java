@@ -1,6 +1,7 @@
 package ru.inmylife.blog.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.inmylife.blog.dto.block.Post;
 import ru.inmylife.blog.entity.PostEntity;
@@ -20,21 +21,40 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post findPost(Long id) {
         return postJpaRepository.findById(id)
-            .map(PostEntity::getPost)
+            .map(this::mapPost)
             .orElse(null);
     }
 
+    @Override
     public List<Post> getPosts() {
         return postJpaRepository.findAll().stream()
-            .map(PostEntity::getPost)
+            .map((e) -> {
+                val post = mapPost(e);
+                post.setBlocks(post.getBlocks().stream().limit(2).toList());
+                return post;
+            })
             .collect(Collectors.toList());
     }
 
+    private Post mapPost(PostEntity entity) {
+        val post = entity.getPost();
+        post.setId(entity.getId());
+        post.setIsPublic(entity.getIsPublic());
+        return post;
+    }
+
     @Override
-    public void saveOrUpdate(Long id, Post post) {
+    public void create(Post post) {
         postJpaRepository.save(new PostEntity()
-            .setId(1L)
             .setCreated(ZonedDateTime.now())
+            .setIsPublic(true)
             .setPost(post));
+    }
+
+    @Override
+    public void update(Long id, Post post) {
+        val isPublic = post.getIsPublic();
+        post.setIsPublic(null);
+        postJpaRepository.update(id, post, isPublic);
     }
 }

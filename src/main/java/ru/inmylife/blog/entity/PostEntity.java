@@ -22,6 +22,8 @@ import java.util.Objects;
 public class PostEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_seq")
+    @SequenceGenerator(name = "id_seq", schema = "BLOG", sequenceName = "POST_SEQ", allocationSize = 1)
     private Long id;
 
     @Column(name = "CREATED")
@@ -30,6 +32,9 @@ public class PostEntity {
     @Column(name = "POST")
     @Convert(converter = PostConverter.class)
     private Post post;
+
+    @Column(name = "IS_PUBLIC")
+    private Boolean isPublic;
 
     @Override
     public boolean equals(Object o) {
@@ -44,4 +49,3 @@ public class PostEntity {
         return getClass().hashCode();
     }
 }
-
