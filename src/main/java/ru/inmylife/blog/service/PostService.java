@@ -1,17 +1,17 @@
 package ru.inmylife.blog.service;
 
 
-import ru.inmylife.blog.dto.block.Post;
+import ru.inmylife.blog.dto.block.PostData;
 
 import java.util.List;
 
 public interface PostService {
 
-    Post findPost(Long id);
+    PostData findPost(Long id);
 
-    List<Post> getPosts();
+    List<PostData> getPosts();
 
-    void create(Post post);
+    void create(PostData postData);
 
-    void update(Long id, Post post);
+    void update(Long id, PostData postData);
 }

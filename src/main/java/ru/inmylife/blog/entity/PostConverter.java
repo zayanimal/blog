@@ -5,23 +5,23 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import ru.inmylife.blog.dto.block.Post;
+import ru.inmylife.blog.dto.block.PostData;
 
 @Converter
 @RequiredArgsConstructor
-public class PostConverter implements AttributeConverter<Post, String> {
+public class PostConverter implements AttributeConverter<PostData, String> {
 
     private final ObjectMapper objectMapper;
 
     @Override
     @SneakyThrows
-    public String convertToDatabaseColumn(Post post) {
-        return objectMapper.writer().writeValueAsString(post);
+    public String convertToDatabaseColumn(PostData postData) {
+        return objectMapper.writer().writeValueAsString(postData);
     }
 
     @Override
     @SneakyThrows
-    public Post convertToEntityAttribute(String s) {
-        return objectMapper.readerFor(Post.class).readValue(s);
+    public PostData convertToEntityAttribute(String s) {
+        return objectMapper.readerFor(PostData.class).readValue(s);
     }
 }

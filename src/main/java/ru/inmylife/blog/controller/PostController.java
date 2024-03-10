@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.inmylife.blog.dto.block.Post;
+import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.service.PostService;
 
 @Controller
@@ -27,15 +27,15 @@ public class PostController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<String> create(@RequestBody Post post) {
-        postService.create(post);
+    public ResponseEntity<String> create(@RequestBody PostData postData) {
+        postService.create(postData);
 
         return ResponseEntity.ok("OK");
     }
 
     @PostMapping("/post/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Post post) {
-        postService.update(id, post);
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody PostData postData) {
+        postService.update(id, postData);
 
         return ResponseEntity.ok("OK");
     }
