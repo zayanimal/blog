@@ -5,7 +5,7 @@ insert into blog.topic (id, name) values
 
 insert into blog.post (id, created, post, is_public) values
 (
-    1,
+    (values next value for blog.post_seq),
     '2024-03-10 15:22:52.370727',
     '{
       "time": 1710073372105,
