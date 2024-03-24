@@ -1,0 +1,10 @@
+.hamburger {
+
+  &_hidden {
+    display: none;
+  }
+
+  svg {
+    padding-right: 1.5em;
+  }
+}
