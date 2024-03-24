@@ -1,7 +1,7 @@
 <#import 'hamburger.ftl' as h>
 <#import 'sidebar.ftl' as s>
 
-<#macro layout>
+<#macro layout topics>
     <!DOCTYPE html>
     <html lang="ru">
         <head>
@@ -19,7 +19,7 @@
                 <h1>In my life</h1>
             </header>
 
-            <@s.aside />
+            <@s.aside topics />
 
             <main class="main">
                 <#nested>

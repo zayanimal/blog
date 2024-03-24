@@ -1,10 +1,19 @@
+insert into blog.users (id, name, pass, enabled, created) values (
+    'ebc18ab5-e6d4-4b85-b40c-e575615c3225',
+    'petryuk',
+    '$2a$10$8ONYhbp2yHqjGjty6.duqO.tsx4304Z.3pt0AdiPywmapfT.CaIUG',
+    true,
+    '2024-03-24'
+);
+
 insert into blog.topic (id, name) values
 (1, 'Путешествия'),
 (2, 'Музыка'),
-(3, 'Спорт');
+(3, 'Спорт'),
+(4, 'Разработка'),
+(5, 'Мотоциклы');
 
-insert into blog.post (id, created, post, is_public) values
-(
+insert into blog.post (id, created, post, user_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-10 15:22:52.370727',
     '{
@@ -47,7 +56,14 @@ insert into blog.post (id, created, post, is_public) values
         }
       ]
     }',
-    true);
+    'ebc18ab5-e6d4-4b85-b40c-e575615c3225',
+    true
+);
+
+insert into blog.user_topic (user_id, topic_id) values
+('ebc18ab5-e6d4-4b85-b40c-e575615c3225', 3),
+('ebc18ab5-e6d4-4b85-b40c-e575615c3225', 4),
+('ebc18ab5-e6d4-4b85-b40c-e575615c3225', 5);
 
 insert into blog.post_topic (post_id, topic_id) values
 (1, 1),

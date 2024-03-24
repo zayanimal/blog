@@ -1,11 +1,11 @@
-<#macro aside>
+<#macro aside topics>
     <aside id="sidebar" class="sidebar sidebar_hidden">
         <h1>Темы</h1>
         <nav>
             <ul>
-                <li>Путешествия</li>
-                <li>Разработка</li>
-                <li>Концерты</li>
+                <#list topics as topic>
+                    <li>${topic.name}</li>
+                </#list>
             </ul>
         </nav>
     </aside>

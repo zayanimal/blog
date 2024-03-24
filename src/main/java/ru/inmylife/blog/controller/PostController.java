@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.service.PostService;
+import ru.inmylife.blog.service.TopicService;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,9 +15,12 @@ public class PostController {
 
     private final PostService postService;
 
+    private final TopicService topicService;
+
     @GetMapping
     public String posts(Model model) {
         model.addAttribute("posts", postService.getPosts());
+        model.addAttribute("topics", topicService.getTopics());
         return "public/index";
     }
 
