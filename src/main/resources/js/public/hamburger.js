@@ -8,13 +8,14 @@ export class Hamburger extends Component {
 
     constructor() {
         super('hamburger');
-        this.addEventListener('click', () => {
-            this.toggle(this.crossIcon);
-            this.toggle(this.hamburgerIcon);
-        });
     }
 
-    toggle(element) {
+    toggle = () => {
+        this._toggle(this.crossIcon);
+        this._toggle(this.hamburgerIcon);
+    }
+
+    _toggle(element) {
         element.classList.toggle(this.getModifier('hidden'));
     }
 

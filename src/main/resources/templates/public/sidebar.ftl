@@ -1,4 +1,5 @@
 <#macro aside topics>
+    <div id="sidebar-background" class="sidebar__background sidebar__background_hidden"></div>
     <aside id="sidebar" class="sidebar sidebar_hidden">
         <h1>Темы</h1>
         <nav>
