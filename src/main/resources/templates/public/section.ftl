@@ -1,5 +1,6 @@
 <#macro section post>
     <section class="section">
+        <div class="section__username">${post.username}</div>
         <#nested>
         <div class="section__topic">
             <#list post.topics as chip>

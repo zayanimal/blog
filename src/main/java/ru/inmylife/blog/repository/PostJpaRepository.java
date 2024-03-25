@@ -7,9 +7,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
+import ru.inmylife.blog.entity.Topic;
+
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PostJpaRepository extends JpaRepository<Post, Long> {
+
+    List<Post> findAllByOrderByCreatedDesc();
+
+    List<Post> findAllByTopicsInOrderByCreatedDesc(Set<Topic> topics);
 
     @Modifying
     @Query("update Post p set p.postData = :data, p.isPublic = :isPublic where p.id = :id")

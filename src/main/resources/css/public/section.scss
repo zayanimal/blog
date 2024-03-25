@@ -1,4 +1,10 @@
 .section {
+  padding-top: 3em;
+
+  &__username {
+    font-weight: bold;
+  }
+
   &__header {
     display: flex;
     flex-direction: column;
@@ -59,9 +65,5 @@
   &__time {
     margin-top: 1em;
     padding-right: 1em;
-  }
-
-  & + & {
-    padding-top: 3em;
   }
 }

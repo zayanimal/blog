@@ -14,6 +14,8 @@ public class PostData {
 
     private Long id;
 
+    private String username;
+
     private List<Block> blocks;
 
     private Set<String> topics;

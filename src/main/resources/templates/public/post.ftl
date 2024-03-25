@@ -2,7 +2,7 @@
 <#import 'section.ftl' as s>
 <#import 'block.ftl' as b>
 
-<@l.layout>
+<@l.layout topics>
     <#if post.isPublic>
         <@s.section post>
             <#list post.blocks as block>

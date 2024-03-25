@@ -46,7 +46,7 @@ const btn = document.getElementById("save");
 btn.addEventListener('click', () => {
     editor.save()
         .then((res) => {
-            return fetch('/post', {
+            return fetch('/post/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

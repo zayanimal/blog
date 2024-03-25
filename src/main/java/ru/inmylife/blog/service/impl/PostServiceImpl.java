@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +33,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostData> getPosts() {
-        return postJpaRepository.findAll().stream()
+    public List<PostData> getPosts(Set<Topic> topics) {
+        return topics.isEmpty()
+            ? getPostData(postJpaRepository.findAllByOrderByCreatedDesc())
+            : getPostData(postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topics));
+    }
+
+    private List<PostData> getPostData(List<Post> posts) {
+        return posts.stream()
             .map((e) -> {
                 val post = mapPost(e);
                 post.setBlocks(post.getBlocks().stream().limit(2).toList());
@@ -45,6 +52,7 @@ public class PostServiceImpl implements PostService {
     private PostData mapPost(Post post) {
         val postData = post.getPostData();
         postData.setId(post.getId());
+        postData.setUsername(post.getUser().getUsername());
         postData.setTopics(post.getTopics().stream().map(Topic::getName).collect(Collectors.toSet()));
         postData.setIsPublic(post.getIsPublic());
         postData.setDate(getFormattedDate(post.getCreated().toLocalDate()));

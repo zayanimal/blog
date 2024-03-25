@@ -47,6 +47,10 @@ public class Post {
     @Column(name = "CREATED")
     private ZonedDateTime created;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

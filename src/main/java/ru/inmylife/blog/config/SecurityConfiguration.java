@@ -31,6 +31,7 @@ public class SecurityConfiguration {
             .authenticationManager(authenticationManager())
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin").authenticated()
+                .requestMatchers("/post/create").authenticated()
                 .requestMatchers("/**").permitAll())
             .formLogin(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable);
