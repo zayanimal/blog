@@ -3,6 +3,8 @@ package ru.inmylife.blog.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
 import ru.inmylife.blog.entity.Topic;
@@ -13,10 +15,7 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,27 +25,26 @@ public class PostServiceImpl implements PostService {
     private final PostJpaRepository postJpaRepository;
 
     @Override
-    public PostData findPost(Long id) {
-        return postJpaRepository.findById(id)
-            .map(this::mapPost)
-            .orElse(null);
+    public Mono<PostData> findPost(Long id) {
+        return Mono.justOrEmpty(postJpaRepository.findById(id).map(this::mapPost));
     }
 
     @Override
-    public List<PostData> getPosts(Set<Topic> topics) {
-        return topics.isEmpty()
+    public Flux<PostData> getPosts(Flux<Topic> topics) {
+        val topicsSet = topics.collect(Collectors.toSet()).defaultIfEmpty(new HashSet<>()).block();
+
+        return Objects.isNull(topicsSet) || topicsSet.isEmpty()
             ? getPostData(postJpaRepository.findAllByOrderByCreatedDesc())
-            : getPostData(postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topics));
+            : getPostData(postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topicsSet));
     }
 
-    private List<PostData> getPostData(List<Post> posts) {
-        return posts.stream()
+    private Flux<PostData> getPostData(List<Post> posts) {
+        return Flux.fromIterable(posts)
             .map((e) -> {
                 val post = mapPost(e);
                 post.setBlocks(post.getBlocks().stream().limit(2).toList());
                 return post;
-            })
-            .collect(Collectors.toList());
+            });
     }
 
     private PostData mapPost(Post post) {

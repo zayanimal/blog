@@ -1,21 +1,19 @@
 package ru.inmylife.blog.service.impl;
 
-import lombok.val;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.service.SessionService;
-
-import java.util.Optional;
 
 @Service
 public class SessionServiceImpl implements SessionService {
 
     @Override
-    public Optional<String> getUserName() {
-        val authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication instanceof AnonymousAuthenticationToken
-            ? Optional.empty()
-            : Optional.of(authentication.getName());
+    public Mono<String> getUserName() {
+        return ReactiveSecurityContextHolder.getContext()
+            .map(SecurityContext::getAuthentication)
+            .map(Authentication::getName);
     }
 }

@@ -1,8 +1,8 @@
 package ru.inmylife.blog.service;
 
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 public interface SessionService {
 
-    Optional<String> getUserName();
+    Mono<String> getUserName();
 }
