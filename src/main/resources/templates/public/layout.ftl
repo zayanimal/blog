@@ -37,6 +37,6 @@
                 <#nested>
             </main>
         </body>
-        <script src="public/index.js"></script>
+        <script src="/public/index.js"></script>
     </html>
 </#macro>

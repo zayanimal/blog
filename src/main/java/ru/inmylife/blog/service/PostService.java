@@ -1,16 +1,15 @@
 package ru.inmylife.blog.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Topic;
 
-import java.util.List;
-import java.util.Set;
-
 public interface PostService {
 
-    PostData findPost(Long id);
+    Mono<PostData> findPost(Long id);
 
-    List<PostData> getPosts(Set<Topic> topics);
+    Flux<PostData> getPosts(Flux<Topic> topics);
 
     void create(PostData postData);
 

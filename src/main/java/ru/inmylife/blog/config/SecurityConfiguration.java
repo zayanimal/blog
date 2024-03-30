@@ -4,60 +4,54 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.exception.UserNotFoundException;
 import ru.inmylife.blog.repository.UserJpaRepository;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final UserJpaRepository userRepository;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         http
             .authenticationManager(authenticationManager())
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin").authenticated()
-                .requestMatchers("/post/create").authenticated()
-                .requestMatchers("/**").permitAll())
+            .authorizeExchange(exchanges -> exchanges
+                .pathMatchers("/admin").authenticated()
+                .pathMatchers("/post/create").authenticated()
+                .pathMatchers("/**").permitAll())
             .formLogin(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable);
+            .csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        val authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService((username -> {
-            var user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    public ReactiveAuthenticationManager authenticationManager() {
+        val authManager = new UserDetailsRepositoryReactiveAuthenticationManager(username -> Mono
+            .justOrEmpty(userRepository.findByUsername(username))
+            .map(usr -> User.builder()
+                .username(usr.getUsername())
+                .password(usr.getPassword())
+                .build())
+            .switchIfEmpty(Mono.error(() -> new UserNotFoundException("Пользователь не найден"))));
 
-            return User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .build();
-        }));
+        authManager.setPasswordEncoder(passwordEncoder());
 
-        return new ProviderManager(authProvider);
+        return authManager;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(10);
     }
 }
