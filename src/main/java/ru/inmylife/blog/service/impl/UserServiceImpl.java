@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.entity.Topic;
 import ru.inmylife.blog.entity.User;
 import ru.inmylife.blog.repository.UserJpaRepository;
@@ -20,11 +21,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<Topic> getUserTopics() {
-        return getCurrentUser().log().flatMapMany(user -> Flux.fromIterable(user.getTopics()));
+        return getCurrentUser().flatMapMany(user -> Flux.fromIterable(user.getTopics()));
     }
 
     @Override
     public Mono<User> getCurrentUser() {
-        return sessionService.getUserName().flatMap(username -> Mono.justOrEmpty(userRepository.findByUsername(username)));
+        return sessionService.getUserName()
+            .flatMap(username -> Mono
+                .fromCallable(() -> userRepository.findByUsername(username))
+                .flatMap(Mono::justOrEmpty)
+                .subscribeOn(Schedulers.boundedElastic()));
     }
 }

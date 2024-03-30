@@ -5,6 +5,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
 import ru.inmylife.blog.entity.Topic;
@@ -26,20 +27,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PostData> findPost(Long id) {
-        return Mono.justOrEmpty(postJpaRepository.findById(id).map(this::mapPost));
+        return Mono
+            .fromCallable(() -> postJpaRepository.findById(id).map(this::mapPost))
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap(Mono::justOrEmpty);
     }
 
     @Override
     public Flux<PostData> getPosts(Flux<Topic> topics) {
-        val topicsSet = topics.collect(Collectors.toSet()).defaultIfEmpty(new HashSet<>()).block();
+        return Mono
+            .fromCallable(() -> {
+                val topicsSet = topics.collect(Collectors.toSet())
+                    .defaultIfEmpty(new HashSet<>())
+                    .block();
 
-        return Objects.isNull(topicsSet) || topicsSet.isEmpty()
-            ? getPostData(postJpaRepository.findAllByOrderByCreatedDesc())
-            : getPostData(postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topicsSet));
-    }
+                return Objects.isNull(topicsSet) || topicsSet.isEmpty()
+                    ? postJpaRepository.findAllByOrderByCreatedDesc()
+                    : postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topicsSet);
 
-    private Flux<PostData> getPostData(List<Post> posts) {
-        return Flux.fromIterable(posts)
+            })
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMapMany(Flux::fromIterable)
             .map((e) -> {
                 val post = mapPost(e);
                 post.setBlocks(post.getBlocks().stream().limit(2).toList());
