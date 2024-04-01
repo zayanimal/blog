@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 import ru.inmylife.blog.service.disk.*;
 import ru.inmylife.blog.service.disk.impl.*;
 
@@ -17,31 +16,26 @@ public class DiskClientConfiguration {
 
     @Bean
     public GetUploadLinkService uploadLinkService() {
-        return new GetGetUploadLinkServiceImpl(restTemplate(), headerService(), properties);
+        return new GetGetUploadLinkServiceImpl(headerService(), properties);
     }
 
     @Bean
     public UploadService uploadService() {
-        return new UploadServiceImpl(restTemplate(), headerService());
+        return new UploadServiceImpl(headerService());
     }
 
     @Bean
     public PublishService publishService() {
-        return new PublishServiceImpl(restTemplate(), headerService(), properties);
+        return new PublishServiceImpl(headerService(), properties);
     }
 
     @Bean
     public LinkService linkService() {
-        return new LinkServiceImpl(restTemplate(), headerService(), properties);
+        return new LinkServiceImpl(headerService(), properties);
     }
 
     @Bean
     public HeaderService headerService() {
         return new HeaderServiceImpl(properties);
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 }

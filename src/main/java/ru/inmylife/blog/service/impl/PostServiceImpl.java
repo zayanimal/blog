@@ -9,6 +9,7 @@ import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
 import ru.inmylife.blog.entity.Topic;
+import ru.inmylife.blog.entity.User;
 import ru.inmylife.blog.repository.PostJpaRepository;
 import ru.inmylife.blog.service.PostService;
 
@@ -48,8 +49,8 @@ public class PostServiceImpl implements PostService {
             })
             .subscribeOn(Schedulers.boundedElastic())
             .flatMapMany(Flux::fromIterable)
-            .map((e) -> {
-                val post = mapPost(e);
+            .map(p -> {
+                val post = mapPost(p);
                 post.setBlocks(post.getBlocks().stream().limit(2).toList());
                 return post;
             });
@@ -72,9 +73,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void create(PostData postData) {
+    public void create(PostData postData, User user) {
         postJpaRepository.save(new Post()
             .setCreated(ZonedDateTime.now())
+            .setUser(user)
             .setIsPublic(true)
             .setPostData(postData));
     }

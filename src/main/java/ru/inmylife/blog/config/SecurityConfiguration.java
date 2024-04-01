@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.exception.UserNotFoundException;
 import ru.inmylife.blog.repository.UserJpaRepository;
 
@@ -38,7 +39,9 @@ public class SecurityConfiguration {
     @Bean
     public ReactiveAuthenticationManager authenticationManager() {
         val authManager = new UserDetailsRepositoryReactiveAuthenticationManager(username -> Mono
-            .justOrEmpty(userRepository.findByUsername(username))
+            .fromCallable(() -> userRepository.findByUsername(username))
+            .flatMap(Mono::justOrEmpty)
+            .subscribeOn(Schedulers.boundedElastic())
             .map(usr -> User.builder()
                 .username(usr.getUsername())
                 .password(usr.getPassword())

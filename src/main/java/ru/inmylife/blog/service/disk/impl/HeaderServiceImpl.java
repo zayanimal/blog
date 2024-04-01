@@ -22,10 +22,16 @@ public class HeaderServiceImpl implements HeaderService {
         return new HttpEntity<>(bytes, getHttpHeaders());
     }
 
+    @Override
     public HttpHeaders getHttpHeaders() {
         val httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, String.format("OAuth %s", properties.getToken()));
+        setHttpHeaders(httpHeaders);
 
         return httpHeaders;
+    }
+
+    @Override
+    public void setHttpHeaders(HttpHeaders httpHeaders) {
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, String.format("OAuth %s", properties.getToken()));
     }
 }

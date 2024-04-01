@@ -2,6 +2,7 @@ package ru.inmylife.blog.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.result.view.Rendering;
@@ -36,16 +37,19 @@ public class PostController {
     }
 
     @PostMapping("/post/create")
-    public Mono<String> create(@RequestBody PostData postData) {
-        postService.create(postData);
-
-        return Mono.just("OK");
+    public Mono<ResponseEntity<String>> create(@RequestBody PostData postData) {
+        return userService.getCurrentUser()
+            .map(user -> {
+                postService.create(postData, user);
+                return user;
+            })
+            .thenReturn(ResponseEntity.ok("OK"));
     }
 
     @PostMapping("/post/{id}")
-    public Mono<String> update(@PathVariable("id") Long id, @RequestBody PostData postData) {
+    public Mono<ResponseEntity<String>> update(@PathVariable("id") Long id, @RequestBody PostData postData) {
         postService.update(id, postData);
 
-        return Mono.just("OK");
+        return Mono.just(ResponseEntity.ok("OK"));
     }
 }

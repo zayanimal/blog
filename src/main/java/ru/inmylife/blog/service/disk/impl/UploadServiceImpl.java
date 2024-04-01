@@ -1,31 +1,45 @@
 package ru.inmylife.blog.service.disk.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.val;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.dto.upload.DiskRs;
 import ru.inmylife.blog.service.disk.HeaderService;
 import ru.inmylife.blog.service.disk.UploadService;
 
-import static org.springframework.http.HttpMethod.PUT;
-
+@Slf4j
 @RequiredArgsConstructor
 public class UploadServiceImpl implements UploadService {
-
-    private final RestTemplate restTemplate;
 
     private final HeaderService headerService;
 
     @Override
-    @SneakyThrows
-    public void upload(DiskRs diskRs, MultipartFile file) {
-        val response = restTemplate
-            .exchange(diskRs.getHref(), PUT, headerService.getBinaryHttpEntity(file.getBytes()), String.class);
+    public Mono<DiskRs> upload(DiskRs diskRs, FilePart file) {
+        log.info("Загружаем файл по ссылке");
+        return mergeDataBuffers(file.content())
+            .flatMap(bytes -> WebClient.create()
+                .put()
+                .uri(diskRs.getHref())
+                .headers(headerService::setHttpHeaders)
+                .body(BodyInserters.fromValue(bytes))
+                .retrieve()
+                .bodyToMono(String.class))
+            .thenReturn(diskRs);
+    }
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Не удалось загрузить файл");
-        }
+    private Mono<byte[]> mergeDataBuffers(Flux<DataBuffer> dataBufferFlux) {
+        return DataBufferUtils.join(dataBufferFlux)
+            .map(dataBuffer -> {
+                byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                dataBuffer.read(bytes);
+                DataBufferUtils.release(dataBuffer);
+                return bytes;
+            });
     }
 }

@@ -1,8 +1,10 @@
 package ru.inmylife.blog.service.disk;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.codec.multipart.FilePart;
+import reactor.core.publisher.Mono;
+import ru.inmylife.blog.dto.upload.ImageRs;
 
 public interface DiskService {
 
-    String uploadAndGetUrl(MultipartFile file);
+    Mono<ImageRs> uploadAndGetUrl(FilePart file);
 }

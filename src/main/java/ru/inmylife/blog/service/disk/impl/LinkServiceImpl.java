@@ -1,8 +1,9 @@
 package ru.inmylife.blog.service.disk.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.springframework.web.client.RestTemplate;
+import lombok.RequiredArgsConstructor;;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.inmylife.blog.config.DiskClientProperties;
 import ru.inmylife.blog.dto.upload.DiskFile;
 import ru.inmylife.blog.dto.upload.DiskRs;
@@ -10,35 +11,27 @@ import ru.inmylife.blog.dto.upload.Link;
 import ru.inmylife.blog.service.disk.HeaderService;
 import ru.inmylife.blog.service.disk.LinkService;
 
-import java.util.Optional;
-
-import static org.springframework.http.HttpMethod.GET;
-
+@Slf4j
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
-
-    private final RestTemplate restTemplate;
 
     private final HeaderService headerService;
 
     private final DiskClientProperties properties;
 
     @Override
-    public String getFileLink(DiskRs diskRs) {
-        try {
-            val response = Optional.ofNullable(restTemplate
-                    .exchange(getResourceUrl(diskRs), GET, headerService.getHttpEntity(), DiskFile.class)
-                    .getBody())
-                .orElseThrow(() -> new RuntimeException("Пустое тело"));
-
-            return response.getSizes().stream()
-                .filter(link -> link.getName().equals("XL"))
-                .findFirst()
-                .map(Link::getUrl)
-                .orElse(null);
-        } catch (Exception e) {
-            throw new RuntimeException("Не удалолось получить ресурсную ссылку", e);
-        }
+    public Mono<String> getFileLink(DiskRs diskRs) {
+        log.info("Получаем публичную ссылку на файл");
+        return WebClient.create()
+            .get()
+            .uri(getResourceUrl(diskRs))
+            .headers(headerService::setHttpHeaders)
+            .exchangeToMono(resp -> resp.bodyToMono(DiskFile.class))
+            .flatMapIterable(DiskFile::getSizes)
+            .filter(link -> link.getName().equals("XL"))
+            .take(1)
+            .next()
+            .map(Link::getUrl);
     }
 
     private String getResourceUrl(DiskRs diskRs) {

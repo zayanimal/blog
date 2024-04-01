@@ -9,4 +9,6 @@ public interface HeaderService {
     HttpEntity<byte[]> getBinaryHttpEntity(byte[] bytes);
 
     HttpHeaders getHttpHeaders();
+
+    void setHttpHeaders(HttpHeaders httpHeaders);
 }
