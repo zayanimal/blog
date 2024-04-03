@@ -11,7 +11,6 @@ import ru.inmylife.blog.dto.block.PostData;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -31,15 +30,8 @@ public class Post {
     @Convert(converter = PostConverter.class)
     private PostData postData;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        schema = "BLOG",
-        name = "POST_TOPIC",
-        joinColumns = @JoinColumn(name = "POST_ID"),
-        foreignKey = @ForeignKey(name = "FK_POST_TOPIC_POST_ID"),
-        inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"),
-        inverseForeignKey = @ForeignKey(name = "FK_POST_TOPIC_TOPIC_ID"))
-    private Set<Topic> topics;
+    @OneToOne(fetch = FetchType.EAGER)
+    private Topic topic;
 
     @Column(name = "IS_PUBLIC")
     private Boolean isPublic;
@@ -48,7 +40,7 @@ public class Post {
     private ZonedDateTime created;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @Override

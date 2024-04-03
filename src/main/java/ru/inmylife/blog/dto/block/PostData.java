@@ -4,7 +4,6 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -18,7 +17,7 @@ public class PostData {
 
     private List<Block> blocks;
 
-    private Set<String> topics;
+    private String topic;
 
     private Boolean isPublic;
 

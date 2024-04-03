@@ -29,7 +29,7 @@ insert into blog.user_topic (user_id, topic_id) values
 ('0f6d0113-3365-442b-9d78-3a1fea559e2d', 2),
 ('0f6d0113-3365-442b-9d78-3a1fea559e2d', 3);
 
-insert into blog.post (id, created, post, user_id, is_public) values (
+insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-10 15:22:52.370727',
     '{
@@ -53,10 +53,11 @@ insert into blog.post (id, created, post, user_id, is_public) values (
       ]
     }',
     'ebc18ab5-e6d4-4b85-b40c-e575615c3225',
+    3,
     true
 );
 
-insert into blog.post (id, created, post, user_id, is_public) values (
+insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-20 15:22:52.370727',
     '{
@@ -80,10 +81,11 @@ insert into blog.post (id, created, post, user_id, is_public) values (
     ]
     }',
     '0f6d0113-3365-442b-9d78-3a1fea559e2d',
+    2,
     true
 );
 
-insert into blog.post (id, created, post, user_id, is_public) values (
+insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-22 15:22:52.370727',
     '{
@@ -107,10 +109,6 @@ insert into blog.post (id, created, post, user_id, is_public) values (
     ]
     }',
     '0f6d0113-3365-442b-9d78-3a1fea559e2d',
+    1,
     true
 );
-
-insert into blog.post_topic (post_id, topic_id) values
-(1, 3),
-(2, 2),
-(3, 1);

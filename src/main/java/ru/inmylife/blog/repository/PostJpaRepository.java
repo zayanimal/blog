@@ -17,7 +17,7 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByOrderByCreatedDesc();
 
-    List<Post> findAllByTopicsInOrderByCreatedDesc(Set<Topic> topics);
+    List<Post> findAllByTopicInOrderByCreatedDesc(Set<Topic> topics);
 
     @Modifying
     @Query("update Post p set p.postData = :data, p.isPublic = :isPublic where p.id = :id")

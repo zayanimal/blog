@@ -12,7 +12,7 @@ public interface PostService {
 
     Flux<PostData> getPosts(Flux<Topic> topics);
 
-    void create(PostData postData, User user);
+    Mono<Boolean> create(PostData postData, User user);
 
-    void update(Long id, PostData postData);
+    Mono<Boolean> update(Long id, PostData postData);
 }

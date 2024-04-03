@@ -44,6 +44,7 @@ const editor = new EditorJS({
 const btn = document.getElementById("save");
 
 btn.addEventListener('click', () => {
+    const settings = new FormData(document.getElementById("settings"));
     editor.save()
         .then((res) => {
             return fetch('/post/create', {
@@ -51,7 +52,10 @@ btn.addEventListener('click', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(res)
+                body: JSON.stringify(Object.assign(res, {
+                    topic: settings.get('topic'),
+                    isPublic: settings.get('is-public') === 'on'
+                }))
             })
         })
 });

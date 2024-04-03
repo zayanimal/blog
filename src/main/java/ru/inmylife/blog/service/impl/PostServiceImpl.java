@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
                 return Objects.isNull(topicsSet) || topicsSet.isEmpty()
                     ? postJpaRepository.findAllByOrderByCreatedDesc()
-                    : postJpaRepository.findAllByTopicsInOrderByCreatedDesc(topicsSet);
+                    : postJpaRepository.findAllByTopicInOrderByCreatedDesc(topicsSet);
 
             })
             .subscribeOn(Schedulers.boundedElastic())
@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
         val postData = post.getPostData();
         postData.setId(post.getId());
         postData.setUsername(post.getUser().getUsername());
-        postData.setTopics(post.getTopics().stream().map(Topic::getName).collect(Collectors.toSet()));
+        postData.setTopic(post.getTopic().getName());
         postData.setIsPublic(post.getIsPublic());
         postData.setDate(getFormattedDate(post.getCreated().toLocalDate()));
         return postData;
@@ -73,18 +73,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void create(PostData postData, User user) {
-        postJpaRepository.save(new Post()
+    public Mono<Boolean> create(PostData postData, User user) {
+        return Mono.fromCallable(() -> postJpaRepository.save(new Post()
             .setCreated(ZonedDateTime.now())
             .setUser(user)
-            .setIsPublic(true)
-            .setPostData(postData));
+            .setIsPublic(postData.getIsPublic())
+            .setTopic(user.getTopics().stream()
+                .filter(t -> Objects.equals(t.getName(), postData.getTopic()))
+                .findFirst()
+                .orElse(null))
+            .setPostData(postData)))
+            .subscribeOn(Schedulers.boundedElastic())
+            .thenReturn(true);
     }
 
     @Override
-    public void update(Long id, PostData postData) {
+    public Mono<Boolean> update(Long id, PostData postData) {
         val isPublic = postData.getIsPublic();
         postData.setIsPublic(null);
-        postJpaRepository.update(id, postData, isPublic);
+        return Mono.fromCallable(() -> {
+            postJpaRepository.update(id, postData, isPublic);
+            return true;
+        })
+        .subscribeOn(Schedulers.boundedElastic());
     }
 }

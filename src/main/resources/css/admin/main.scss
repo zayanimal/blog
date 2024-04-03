@@ -1,0 +1,11 @@
+.main {
+  &__settings {
+    margin-bottom: 2em;
+  }
+
+  &__settings-item {
+    & + & {
+      margin-top: 1em;
+    }
+  }
+}

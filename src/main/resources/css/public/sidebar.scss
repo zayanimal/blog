@@ -16,9 +16,10 @@
         left: 0;
         position: fixed;
         background-color: rgba(68, 68, 68, 0.47);
+        visibility: visible;
 
         &_hidden {
-            display: none;
+            visibility: hidden;
         }
     }
 
@@ -36,10 +37,10 @@
             border-radius: 30px;
             text-align: center;
             background-color: #f1f1f1;
-        }
 
-        li + li {
-            margin-top: 0.5em;
+            & + & {
+                margin-top: 0.5em;
+            }
         }
     }
 }

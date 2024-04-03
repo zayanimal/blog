@@ -1,8 +1,12 @@
 .section {
   padding-top: 3em;
 
+  &__topic {
+    color: var(--topic-color);
+  }
+
   &__username {
-    font-weight: bold;
+    color: var(--username-color);
   }
 
   &__header {
@@ -39,21 +43,6 @@
 
   &__read-more {
     margin-top: 2em;
-  }
-
-  &__topic {
-    margin-top: 2em;
-  }
-
-  &__chip {
-    padding: 0.3em;
-    border: 1px solid rgb(87, 87, 87);
-    border-radius: 5px;
-    background-color: #f1f1f1;
-
-    & + & {
-      margin-left: 10px;
-    }
   }
 
   &__delimeter {

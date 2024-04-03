@@ -43,16 +43,10 @@ create table blog.post (
     created timestamp(6) not null,
     post text not null,
     user_id uuid not null,
+    topic_id bigint not null,
     is_public boolean default true,
     constraint pk_post_id primary key (id),
     constraint fk_post_user_id foreign key (user_id) references blog.users(id)
-);
-
-create table blog.post_topic (
-  post_id bigint not null,
-  topic_id bigint not null,
-  constraint fk_post_topic_post_id foreign key (post_id) references blog.post(id),
-  constraint fk_post_topic_topic_id foreign key (topic_id) references blog.topic(id)
 );
 
 create sequence blog.post_seq

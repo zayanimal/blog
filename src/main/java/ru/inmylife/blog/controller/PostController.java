@@ -39,17 +39,13 @@ public class PostController {
     @PostMapping("/post/create")
     public Mono<ResponseEntity<String>> create(@RequestBody PostData postData) {
         return userService.getCurrentUser()
-            .map(user -> {
-                postService.create(postData, user);
-                return user;
-            })
+            .flatMap(user -> postService.create(postData, user))
             .thenReturn(ResponseEntity.ok("OK"));
     }
 
     @PostMapping("/post/{id}")
     public Mono<ResponseEntity<String>> update(@PathVariable("id") Long id, @RequestBody PostData postData) {
-        postService.update(id, postData);
-
-        return Mono.just(ResponseEntity.ok("OK"));
+        return postService.update(id, postData)
+            .thenReturn(ResponseEntity.ok("OK"));
     }
 }
