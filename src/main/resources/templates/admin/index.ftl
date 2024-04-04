@@ -12,7 +12,6 @@
         <div class="main__settings-item">
             <label for="topic">Тема поста: </label>
             <select name="topic" form="settings" id="topic" required>
-                <option value="" selected>--Выберите тему--</option>
                 <#list topics as topic>
                     <option value="${topic}">${topic}</option>
                 </#list>

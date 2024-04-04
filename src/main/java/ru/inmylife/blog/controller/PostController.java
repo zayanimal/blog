@@ -21,10 +21,10 @@ public class PostController {
 
     @GetMapping
     public Rendering posts() {
-        val topics = userService.getUserTopics();
+        val user = userService.getCurrentUser();
         return Rendering.view("public/index")
-            .modelAttribute("posts", postService.getPosts(topics))
-            .modelAttribute("topics", topics)
+            .modelAttribute("posts", postService.getPosts(user))
+            .modelAttribute("topics", userService.getUserTopics(user))
             .build();
     }
 

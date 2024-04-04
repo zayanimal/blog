@@ -1,3 +1,13 @@
+.hamburger {
+    &_hidden {
+        display: none;
+    }
+
+    svg {
+        padding-right: 1.5em;
+    }
+}
+
 .sidebar {
     position: fixed;
     height: 100vh;
@@ -5,7 +15,7 @@
     width: 8em;
     z-index: 1;
     padding: 1em 2em;
-    background-color: whitesmoke;
+    background-color: var(--drop-down-menu-color);
     transition: transform 100ms ease-out;
     transform: translateX(0rem);
 
@@ -15,7 +25,7 @@
         bottom: 0;
         left: 0;
         position: fixed;
-        background-color: rgba(68, 68, 68, 0.47);
+        background-color: var(--background-color);
         visibility: visible;
 
         &_hidden {
@@ -36,11 +46,11 @@
             border: 1px solid rgb(87, 87, 87);
             border-radius: 30px;
             text-align: center;
-            background-color: #f1f1f1;
+            background-color: var(--topic-chip-color);
+        }
 
-            & + & {
-                margin-top: 0.5em;
-            }
+        li + li {
+            margin-top: 0.5em;
         }
     }
 }

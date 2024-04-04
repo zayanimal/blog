@@ -8,10 +8,10 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
-import ru.inmylife.blog.entity.Topic;
 import ru.inmylife.blog.entity.User;
 import ru.inmylife.blog.repository.PostJpaRepository;
 import ru.inmylife.blog.service.PostService;
+import ru.inmylife.blog.service.UserService;
 
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -26,6 +26,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostJpaRepository postJpaRepository;
 
+    private final UserService userService;
+
     @Override
     public Mono<PostData> findPost(Long id) {
         return Mono
@@ -35,10 +37,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Flux<PostData> getPosts(Flux<Topic> topics) {
+    public Flux<PostData> getPosts(Mono<User> user) {
         return Mono
             .fromCallable(() -> {
-                val topicsSet = topics.collect(Collectors.toSet())
+                val topicsSet = userService.getUserTopics(user).collect(Collectors.toSet())
                     .defaultIfEmpty(new HashSet<>())
                     .block();
 
@@ -49,11 +51,9 @@ public class PostServiceImpl implements PostService {
             })
             .subscribeOn(Schedulers.boundedElastic())
             .flatMapMany(Flux::fromIterable)
-            .map(p -> {
-                val post = mapPost(p);
-                post.setBlocks(post.getBlocks().stream().limit(2).toList());
-                return post;
-            });
+            .map(this::mapPost)
+            .map(post -> post.setBlocks(post.getBlocks().stream().limit(2).toList()))
+            .filterWhen(p -> isVisiblePost(p, user));
     }
 
     private PostData mapPost(Post post) {
@@ -70,6 +70,14 @@ public class PostServiceImpl implements PostService {
         val locale = new Locale("ru", "RU");
         val dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
         return dateFormat.format(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+
+    private Mono<Boolean> isVisiblePost(PostData post, Mono<User> user) {
+        return user
+            .map(User::getUsername)
+            .filter(username -> post.getUsername().equals(username))
+            .hasElement()
+            .map(isUserPost -> isUserPost || post.getIsPublic());
     }
 
     @Override

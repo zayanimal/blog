@@ -21,7 +21,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<Topic> getUserTopics() {
-        return getCurrentUser().flatMapMany(user -> Flux.fromIterable(user.getTopics()));
+        return getUserTopics(getCurrentUser());
+    }
+
+    @Override
+    public Flux<Topic> getUserTopics(Mono<User> user) {
+        return user.flatMapMany(u -> Flux.fromIterable(u.getTopics()));
     }
 
     @Override

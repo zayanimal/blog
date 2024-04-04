@@ -9,5 +9,7 @@ public interface UserService {
 
     Mono<User> getCurrentUser();
 
+    Flux<Topic> getUserTopics(Mono<User> user);
+
     Flux<Topic> getUserTopics();
 }
