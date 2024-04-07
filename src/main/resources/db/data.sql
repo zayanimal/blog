@@ -29,13 +29,10 @@ insert into blog.user_topic (user_id, topic_id) values
 ('0f6d0113-3365-442b-9d78-3a1fea559e2d', 2),
 ('0f6d0113-3365-442b-9d78-3a1fea559e2d', 3);
 
-insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
+insert into blog.post (id, created, post, link_text, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-10 15:22:52.370727',
-    '{
-      "time": 1710073372105,
-      "version": "2.29.0",
-      "blocks": [
+    '[
         {
           "id": "TqbSfx3p0p",
           "type": "header",
@@ -50,64 +47,58 @@ insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
             "text": "Меня беспокоят Олимпийские игры в Париже. Они станут первоклассной мишенью для террористов, — заявил Фиттон‑Браун New York Times."
           }
         }
-      ]
-    }',
+    ]',
+    'sport-eto-prekrasno',
     'ebc18ab5-e6d4-4b85-b40c-e575615c3225',
     3,
     true
 );
 
-insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
+insert into blog.post (id, created, post, link_text, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-20 15:22:52.370727',
-    '{
-    "time": 1710073372105,
-    "version": "2.29.0",
-    "blocks": [
-     {
-       "id": "TqbSfx3p0p",
-       "type": "header",
-       "data": {
-         "text": "Я люблю слушать джаз"
-       }
-     },
-     {
-       "id": "fNx6IY27nO",
-       "type": "paragraph",
-       "data": {
-         "text": "Джаз как мультикультурное явление обогащался различными региональными музыкальными особенностями[6]. На развитие джаза также повлияли духовые оркестры, марширующие по праздникам на улицах городов США, а также военные и танцевальные оркестры."
-       }
-     }
-    ]
-    }',
+    '[
+         {
+           "id": "TqbSfx3p0p",
+           "type": "header",
+           "data": {
+             "text": "Я люблю слушать джаз"
+           }
+         },
+         {
+           "id": "fNx6IY27nO",
+           "type": "paragraph",
+           "data": {
+             "text": "Джаз как мультикультурное явление обогащался различными региональными музыкальными особенностями[6]. На развитие джаза также повлияли духовые оркестры, марширующие по праздникам на улицах городов США, а также военные и танцевальные оркестры."
+           }
+         }
+    ]',
+    'ja-lublyu-slushat-jazz',
     '0f6d0113-3365-442b-9d78-3a1fea559e2d',
     2,
     true
 );
 
-insert into blog.post (id, created, post, user_id, topic_id, is_public) values (
+insert into blog.post (id, created, post, link_text, user_id, topic_id, is_public) values (
     (values next value for blog.post_seq),
     '2024-03-22 15:22:52.370727',
-    '{
-    "time": 1710073372105,
-    "version": "2.29.0",
-    "blocks": [
-     {
-       "id": "TqbSfx3p0p",
-       "type": "header",
-       "data": {
-         "text": "Путешествие на килиманджаро"
-       }
-     },
-     {
-       "id": "fNx6IY27nO",
-       "type": "paragraph",
-       "data": {
-         "text": "Килиманджа́ро — высочайший стратовулкан Африки, находящийся на северо-востоке Танзании, высочайшая точка континента. C 1902 по 1918 годы назывался Вершина Кайзера Вильгельма. Килиманджаро возвышается над плоскогорьем Масаи, которое расположено на высоте 900 метров над уровнем моря."
-       }
-     }
-    ]
-    }',
+    '[
+         {
+           "id": "TqbSfx3p0p",
+           "type": "header",
+           "data": {
+             "text": "Путешествие на килиманджаро"
+           }
+         },
+         {
+           "id": "fNx6IY27nO",
+           "type": "paragraph",
+           "data": {
+             "text": "Килиманджа́ро — высочайший стратовулкан Африки, находящийся на северо-востоке Танзании, высочайшая точка континента. C 1902 по 1918 годы назывался Вершина Кайзера Вильгельма. Килиманджаро возвышается над плоскогорьем Масаи, которое расположено на высоте 900 метров над уровнем моря."
+           }
+         }
+    ]',
+    'puteshestvie-na-kilimandjaro',
     '0f6d0113-3365-442b-9d78-3a1fea559e2d',
     1,
     true

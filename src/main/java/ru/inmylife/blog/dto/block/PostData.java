@@ -21,6 +21,8 @@ public class PostData {
 
     private String topic;
 
+    private String linkText;
+
     private Boolean isPublic;
 
     private String date;

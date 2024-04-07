@@ -10,7 +10,7 @@
                     <@b.switch block />
                 </#list>
                 <div class="section__read-more">
-                    <a href="/post/${post.id}">Читать дальше</a>
+                    <a href="/post/${post.linkText}">Читать дальше</a>
                 </div>
             </@s.section>
         </#if>

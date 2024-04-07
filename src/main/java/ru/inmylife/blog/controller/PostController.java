@@ -28,10 +28,10 @@ public class PostController {
             .build();
     }
 
-    @GetMapping("/post/{id}")
-    public Rendering post(@PathVariable("id") Long id) {
+    @GetMapping("/post/{linkText}")
+    public Rendering post(@PathVariable("linkText") String linkText) {
         return Rendering.view("public/post")
-            .modelAttribute("post", postService.findPost(id))
+            .modelAttribute("post", postService.findPost(linkText))
             .modelAttribute("topics", userService.getUserTopics())
             .build();
     }
@@ -40,12 +40,6 @@ public class PostController {
     public Mono<ResponseEntity<String>> create(@RequestBody PostData postData) {
         return userService.getCurrentUser()
             .flatMap(user -> postService.create(postData, user))
-            .thenReturn(ResponseEntity.ok("OK"));
-    }
-
-    @PostMapping("/post/{id}")
-    public Mono<ResponseEntity<String>> update(@PathVariable("id") Long id, @RequestBody PostData postData) {
-        return postService.update(id, postData)
             .thenReturn(ResponseEntity.ok("OK"));
     }
 }

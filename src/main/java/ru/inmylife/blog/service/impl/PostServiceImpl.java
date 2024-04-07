@@ -6,10 +6,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import ru.inmylife.blog.dto.block.Block;
+import ru.inmylife.blog.dto.block.BlockData;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
 import ru.inmylife.blog.entity.User;
+import ru.inmylife.blog.exception.TitleNotFoundException;
+import ru.inmylife.blog.exception.TopicNotFoundException;
 import ru.inmylife.blog.repository.PostJpaRepository;
+import ru.inmylife.blog.service.LinkService;
 import ru.inmylife.blog.service.PostService;
 import ru.inmylife.blog.service.UserService;
 
@@ -28,10 +33,14 @@ public class PostServiceImpl implements PostService {
 
     private final UserService userService;
 
+    private final LinkService linkService;
+
     @Override
-    public Mono<PostData> findPost(Long id) {
+    public Mono<PostData> findPost(String linkText) {
         return Mono
-            .fromCallable(() -> postJpaRepository.findById(id).map(this::mapPost))
+            .fromCallable(() -> postJpaRepository
+                .findPostByLinkText(linkText)
+                .map(this::mapPost))
             .subscribeOn(Schedulers.boundedElastic())
             .flatMap(Mono::justOrEmpty);
     }
@@ -57,13 +66,14 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostData mapPost(Post post) {
-        val postData = post.getPostData();
-        postData.setId(post.getId());
-        postData.setUsername(post.getUser().getUsername());
-        postData.setTopic(post.getTopic().getName());
-        postData.setIsPublic(post.getIsPublic());
-        postData.setDate(getFormattedDate(post.getCreated().toLocalDate()));
-        return postData;
+        return new PostData()
+            .setId(post.getId())
+            .setUsername(post.getUser().getUsername())
+            .setTopic(post.getTopic().getName())
+            .setBlocks(post.getBlocks())
+            .setLinkText(post.getLinkText())
+            .setIsPublic(post.getIsPublic())
+            .setDate(getFormattedDate(post.getCreated().toLocalDate()));
     }
 
     private String getFormattedDate(LocalDate date) {
@@ -82,6 +92,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<Boolean> create(PostData postData, User user) {
+        val blocks = postData.getBlocks();
+        val linkText = getLinkText(blocks);
         return Mono.fromCallable(() -> postJpaRepository.save(new Post()
             .setCreated(ZonedDateTime.now())
             .setUser(user)
@@ -89,20 +101,19 @@ public class PostServiceImpl implements PostService {
             .setTopic(user.getTopics().stream()
                 .filter(t -> Objects.equals(t.getName(), postData.getTopic()))
                 .findFirst()
-                .orElse(null))
-            .setPostData(postData)))
+                .orElseThrow(() -> new TopicNotFoundException("Тема не соответствует темам пользователя")))
+            .setBlocks(blocks)
+            .setLinkText(linkText)))
             .subscribeOn(Schedulers.boundedElastic())
             .thenReturn(true);
     }
 
-    @Override
-    public Mono<Boolean> update(Long id, PostData postData) {
-        val isPublic = postData.getIsPublic();
-        postData.setIsPublic(null);
-        return Mono.fromCallable(() -> {
-            postJpaRepository.update(id, postData, isPublic);
-            return true;
-        })
-        .subscribeOn(Schedulers.boundedElastic());
+    private String getLinkText(List<Block> blocks) {
+        return blocks.stream()
+            .findFirst()
+            .map(Block::getData)
+            .map(BlockData::getText)
+            .map(linkService::transliterate)
+            .orElseThrow(() -> new TitleNotFoundException("Заголовок поста не найден"));
     }
 }

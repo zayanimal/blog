@@ -7,11 +7,9 @@ import ru.inmylife.blog.entity.User;
 
 public interface PostService {
 
-    Mono<PostData> findPost(Long id);
+    Mono<PostData> findPost(String linkText);
 
     Flux<PostData> getPosts(Mono<User> user);
 
     Mono<Boolean> create(PostData postData, User user);
-
-    Mono<Boolean> update(Long id, PostData postData);
 }

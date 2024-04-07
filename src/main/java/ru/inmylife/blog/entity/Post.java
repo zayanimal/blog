@@ -7,9 +7,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
-import ru.inmylife.blog.dto.block.PostData;
+import ru.inmylife.blog.dto.block.Block;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -28,10 +29,13 @@ public class Post {
 
     @Column(name = "POST")
     @Convert(converter = PostConverter.class)
-    private PostData postData;
+    private List<Block> blocks;
 
     @OneToOne(fetch = FetchType.EAGER)
     private Topic topic;
+
+    @Column(name = "LINK_TEXT", unique = true)
+    private String linkText;
 
     @Column(name = "IS_PUBLIC")
     private Boolean isPublic;
@@ -39,8 +43,8 @@ public class Post {
     @Column(name = "CREATED")
     private ZonedDateTime created;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @Override

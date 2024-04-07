@@ -1,10 +1,10 @@
 create schema if not exists blog;
 
 drop table if exists blog.user_topic;
-drop table if exists blog.post_topic;
 drop sequence if exists blog.topic_seq;
 drop table if exists blog.topic;
 drop sequence if exists blog.post_seq;
+drop index if exists blog.link_text_idx;
 drop table if exists blog.post;
 drop table if exists blog.users;
 
@@ -42,6 +42,7 @@ create table blog.post (
     id bigint not null,
     created timestamp(6) not null,
     post text not null,
+    link_text varchar(300) not null,
     user_id uuid not null,
     topic_id bigint not null,
     is_public boolean default true,
@@ -56,3 +57,5 @@ create sequence blog.post_seq
     start with 1
     nocache
     nocycle;
+
+create unique index if not exists blog.link_text_idx on blog.post(link_text);
