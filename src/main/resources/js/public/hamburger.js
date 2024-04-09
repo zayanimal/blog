@@ -19,6 +19,11 @@ export class Hamburger extends Component {
         element.classList.toggle(this.getModifier('hidden'));
     }
 
+    hide = () => {
+        this.crossIcon.classList.add(this.getModifier('hidden'));
+        this.hamburgerIcon.classList.remove(this.getModifier('hidden'))
+    }
+
     addEventListener(event, handler) {
         this.context.addEventListener(event, handler);
     }

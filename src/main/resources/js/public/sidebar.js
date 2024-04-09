@@ -18,4 +18,10 @@ export class Sidebar extends Component {
         this.context.classList.toggle(this.getModifier('hidden'));
         this.background.classList.toggle(`${this.className}__background_hidden`);
     }
+
+    hide = () => {
+        this.hamburger.hide();
+        this.context.classList.add(this.getModifier('hidden'));
+        this.background.classList.add(`${this.className}__background_hidden`);
+    }
 }
