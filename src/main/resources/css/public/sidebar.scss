@@ -12,12 +12,16 @@
     position: fixed;
     height: 100vh;
     font-size: 2.2em;
-    width: 8em;
+    width: 10em;
     z-index: 1;
     padding: 1em 2em;
     background-color: var(--drop-down-menu-color);
     transition: transform 100ms ease-out;
     transform: translateX(0rem);
+
+    &_hidden {
+        transform: translateX(-32rem);
+    }
 
     &__background {
         top: 8em;
@@ -31,10 +35,6 @@
         &_hidden {
             visibility: hidden;
         }
-    }
-
-    &_hidden {
-        transform: translateX(-27rem);
     }
 
     ul {

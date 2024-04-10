@@ -9,6 +9,7 @@ import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.service.PostService;
+import ru.inmylife.blog.service.SessionService;
 import ru.inmylife.blog.service.UserService;
 
 @Controller
@@ -19,10 +20,13 @@ public class PostController {
 
     private final UserService userService;
 
+    private final SessionService sessionService;
+
     @GetMapping
     public Rendering posts() {
         val user = userService.getCurrentUser();
         return Rendering.view("public/index")
+            .modelAttribute("isAuth", sessionService.isAuthenticated())
             .modelAttribute("posts", postService.getPosts(user))
             .modelAttribute("topics", userService.getUserTopics(user))
             .build();
@@ -31,6 +35,7 @@ public class PostController {
     @GetMapping("/post/{linkText}")
     public Rendering post(@PathVariable("linkText") String linkText) {
         return Rendering.view("public/post")
+            .modelAttribute("isAuth", sessionService.isAuthenticated())
             .modelAttribute("post", postService.findPost(linkText))
             .modelAttribute("topics", userService.getUserTopics())
             .build();

@@ -11,15 +11,22 @@
     </div>
 </#macro>
 
-<#macro menu>
+<#macro menu isAuth>
     <div id="user-menu-background" class="user-menu__background user-menu__background_hidden"></div>
     <div id="user-menu" class="user-menu user-menu_hidden">
         <ul class="user-menu__list">
             <li class="user-menu__list-item">
-                <svg class="user-menu__icon" width="60px" height="60px" viewBox="0 0 24 24" fill="none">
-                    <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke="#9ba3aca8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <a class="user-menu__link" href="/logout">Выйти</a>
+                <#if isAuth == true>
+                    <svg class="user-menu__icon" width="60px" height="60px" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke="#9ba3aca8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <a class="user-menu__link" href="/logout">Выйти</a>
+                <#else>
+                    <svg class="user-menu__icon" width="60px" height="60px" viewBox="0 0 24 24" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6C8 3.79086 9.79086 2 12 2H17.5C19.9853 2 22 4.01472 22 6.5V17.5C22 19.9853 19.9853 22 17.5 22H12C9.79086 22 8 20.2091 8 18V17C8 16.4477 8.44772 16 9 16C9.55228 16 10 16.4477 10 17V18C10 19.1046 10.8954 20 12 20H17.5C18.8807 20 20 18.8807 20 17.5V6.5C20 5.11929 18.8807 4 17.5 4H12C10.8954 4 10 4.89543 10 6V7C10 7.55228 9.55228 8 9 8C8.44772 8 8 7.55228 8 7V6ZM12.2929 8.29289C12.6834 7.90237 13.3166 7.90237 13.7071 8.29289L16.7071 11.2929C17.0976 11.6834 17.0976 12.3166 16.7071 12.7071L13.7071 15.7071C13.3166 16.0976 12.6834 16.0976 12.2929 15.7071C11.9024 15.3166 11.9024 14.6834 12.2929 14.2929L13.5858 13L5 13C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11L13.5858 11L12.2929 9.70711C11.9024 9.31658 11.9024 8.68342 12.2929 8.29289Z" fill="#9ba3aca8"/>
+                    </svg>
+                    <a class="user-menu__link" href="/login">Войти</a>
+                </#if>
             </li>
         </ul>
     </div>

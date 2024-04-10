@@ -1,5 +1,5 @@
 <#import 'sidebar.ftl' as s>
-<#import 'user.ftl' as u>
+<#import 'user-menu.ftl' as u>
 
 <#macro header>
     <header class="header">

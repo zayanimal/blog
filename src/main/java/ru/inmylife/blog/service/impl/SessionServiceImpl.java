@@ -11,9 +11,18 @@ import ru.inmylife.blog.service.SessionService;
 public class SessionServiceImpl implements SessionService {
 
     @Override
+    public Mono<Boolean> isAuthenticated() {
+        return getAuthentication().map(Authentication::isAuthenticated)
+            .switchIfEmpty(Mono.just(Boolean.FALSE));
+    }
+
+    @Override
     public Mono<String> getUserName() {
+        return getAuthentication().map(Authentication::getName);
+    }
+
+    private Mono<Authentication> getAuthentication() {
         return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .map(Authentication::getName);
+            .map(SecurityContext::getAuthentication);
     }
 }

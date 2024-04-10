@@ -4,5 +4,7 @@ import reactor.core.publisher.Mono;
 
 public interface SessionService {
 
+    Mono<Boolean> isAuthenticated();
+
     Mono<String> getUserName();
 }

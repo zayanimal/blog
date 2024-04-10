@@ -1,8 +1,8 @@
 <#import 'header.ftl' as h>
 <#import 'sidebar.ftl' as s>
-<#import 'user.ftl' as u>
+<#import 'user-menu.ftl' as u>
 
-<#macro layout topics>
+<#macro layout topics isAuth>
     <!DOCTYPE html>
     <html lang="ru">
         <head>
@@ -21,7 +21,7 @@
                 <#nested>
             </main>
 
-            <@u.menu />
+            <@u.menu isAuth />
         </body>
         <script src="/public/index.js"></script>
     </html>
