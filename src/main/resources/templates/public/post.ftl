@@ -2,7 +2,7 @@
 <#import 'section.ftl' as s>
 <#import 'block.ftl' as b>
 
-<@l.layout topics>
+<@l.layout topics isAuth>
     <@s.section post>
         <#list post.blocks as block>
             <@b.switch block />

@@ -6,16 +6,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.exception.UserNotFoundException;
 import ru.inmylife.blog.repository.UserJpaRepository;
+
+import java.net.URI;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,9 +34,23 @@ public class SecurityConfiguration {
                 .pathMatchers("/admin").authenticated()
                 .pathMatchers("/post/create").authenticated()
                 .pathMatchers("/**").permitAll())
-            .formLogin(Customizer.withDefaults())
+            .formLogin(formLoginSpec -> formLoginSpec.loginPage("/login"))
+            .logout(logoutSpec -> logoutSpec.logoutUrl("/logout")
+                .logoutSuccessHandler(buildLogoutHandler())
+                .logoutHandler(logoutHandler()))
             .csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();
+    }
+
+    private RedirectServerLogoutSuccessHandler buildLogoutHandler() {
+        val redirectServerLogoutSuccessHandler = new RedirectServerLogoutSuccessHandler();
+        redirectServerLogoutSuccessHandler.setLogoutSuccessUrl(URI.create("/"));
+        return redirectServerLogoutSuccessHandler;
+    }
+
+    @Bean
+    public SecurityContextServerLogoutHandler logoutHandler() {
+        return new SecurityContextServerLogoutHandler();
     }
 
     @Bean

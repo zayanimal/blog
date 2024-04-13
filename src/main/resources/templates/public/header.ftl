@@ -5,7 +5,7 @@
     <header class="header">
         <div class="header__title">
             <@s.hamburger />
-            <h1>In my life</h1>
+            <h1><a href="/">In my life</a></h1>
         </div>
 
         <@u.icon />
