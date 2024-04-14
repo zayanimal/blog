@@ -1,11 +1,25 @@
 .login {
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
 
-  &__label {
-    display: block;
+  &__form {
+    width: 38em;
+    margin-bottom: 20em;
   }
 
-  &__input {
-    display: block;
+  &__label {
+    font-size: 3em;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.5em;
+    margin: 1em 0;
+    font-size: 3em;
+    box-sizing: border-box;
+    border-radius: 16px;
   }
 }

@@ -9,14 +9,16 @@
     </head>
 
     <body>
-        <form class="login" name="login" action="login" method="POST">
-            <label class="login__label" for="username">User:</label>
-            <input class="login__input" type='text' name='username' id="username">
+        <main class="login">
+            <form class="login__form" name="login" action="login" method="POST">
+                <label class="login__label" for="username">Пользователь:</label>
+                <input type='text' name='username' id="username">
 
-            <label class="login__label" for="password">Password:</label>
-            <input class="login__input" type="password" name="password" id="password" />
+                <label class="login__label" for="password">Пароль:</label>
+                <input type="password" name="password" id="password" />
 
-            <input class="login__button" name="submit" type="submit" />
-        </form>
+                <input class="login__button" name="submit" type="submit" value="Подтвердить" />
+            </form>
+        </main>
     </body>
 </html>
