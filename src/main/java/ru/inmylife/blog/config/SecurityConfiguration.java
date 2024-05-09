@@ -9,10 +9,10 @@ import org.springframework.security.authentication.UserDetailsRepositoryReactive
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.exception.UserNotFoundException;
@@ -29,7 +29,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         http
+            .securityContextRepository(securityContextRepository())
             .authenticationManager(authenticationManager())
+//            .addFilterBefore(new RememberMeFilter(authenticationManager(), securityContextRepository()), AUTHENTICATION)
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/admin").authenticated()
                 .pathMatchers("/post/create").authenticated()
@@ -49,6 +51,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public WebSessionServerSecurityContextRepository securityContextRepository() {
+        return new WebSessionServerSecurityContextRepository();
+    }
+
+    @Bean
     public SecurityContextServerLogoutHandler logoutHandler() {
         return new SecurityContextServerLogoutHandler();
     }
@@ -65,13 +72,8 @@ public class SecurityConfiguration {
                 .build())
             .switchIfEmpty(Mono.error(() -> new UserNotFoundException("Пользователь не найден"))));
 
-        authManager.setPasswordEncoder(passwordEncoder());
+        authManager.setPasswordEncoder(new BCryptPasswordEncoder(10));
 
         return authManager;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 }
