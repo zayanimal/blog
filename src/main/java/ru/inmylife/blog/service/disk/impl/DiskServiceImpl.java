@@ -2,12 +2,14 @@ package ru.inmylife.blog.service.disk.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.codec.multipart.FilePart;
+import lombok.val;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import ru.inmylife.blog.dto.upload.FileRs;
-import ru.inmylife.blog.dto.upload.ImageRs;
-import ru.inmylife.blog.service.disk.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.inmylife.blog.service.disk.DiskService;
+import ru.inmylife.blog.service.disk.GetUploadLinkService;
+import ru.inmylife.blog.service.disk.LinkService;
+import ru.inmylife.blog.service.disk.PublishService;
+import ru.inmylife.blog.service.disk.UploadService;
 
 @Slf4j
 @Service
@@ -23,14 +25,16 @@ public class DiskServiceImpl implements DiskService {
     private final LinkService linkService;
 
     @Override
-    public Mono<ImageRs> uploadAndGetUrl(FilePart file) {
-        return uploadLinkService.getUploadLink(file)
-            .flatMap(diskRs -> uploadService.upload(diskRs, file))
-            .flatMap(publishService::publish)
-            .flatMap(linkService::getFileLink)
-            .map(res -> ImageRs.builder()
-                .success(1)
-                .file(FileRs.builder().url(res).build())
-                .build());
+    public String uploadAndGetUrl(MultipartFile file) {
+        try {
+            val uploadLinkRs = uploadLinkService.getUploadLink(file);
+
+            uploadService.upload(uploadLinkRs, file);
+            publishService.publish(uploadLinkRs);
+
+            return linkService.getFileLink(uploadLinkRs);
+        } catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка транзакции загрузки файла", e);
+        }
     }
 }

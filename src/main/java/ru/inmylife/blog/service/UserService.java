@@ -1,15 +1,16 @@
 package ru.inmylife.blog.service;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.inmylife.blog.entity.Topic;
 import ru.inmylife.blog.entity.User;
 
+import java.util.Optional;
+import java.util.Set;
+
 public interface UserService {
 
-    Mono<User> getCurrentUser();
+    Optional<User> getCurrentUser();
 
-    Flux<Topic> getUserTopics(Mono<User> user);
+    Set<Topic> getUserTopics(Optional<User> user);
 
-    Flux<Topic> getUserTopics();
+    Set<Topic> getUserTopics();
 }

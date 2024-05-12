@@ -1,41 +1,39 @@
 package ru.inmylife.blog.service.impl;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.web.server.WebFilterExchange;
-import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 import ru.inmylife.blog.service.SessionService;
 
+import java.util.Optional;
+
 @Service
-@RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
 
-    private final SecurityContextServerLogoutHandler logoutHandler;
+    private static final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @Override
-    public Mono<Boolean> isAuthenticated() {
-        return getAuthentication().map(Authentication::isAuthenticated)
-            .switchIfEmpty(Mono.just(Boolean.FALSE));
+    public Boolean isAuthenticated() {
+        return getAuthentication()
+            .map(Authentication::isAuthenticated)
+            .orElse(Boolean.FALSE);
     }
 
     @Override
-    public Mono<String> getUserName() {
+    public Optional<String> getUserName() {
         return getAuthentication().map(Authentication::getName);
     }
 
-    private Mono<Authentication> getAuthentication() {
-        return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication);
+    private Optional<Authentication> getAuthentication() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Override
-    public Mono<Void> logout(ServerWebExchange exchange, Authentication authentication) {
-        return logoutHandler.logout(new WebFilterExchange(exchange, chain -> Mono.empty()), authentication);
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        logoutHandler.logout(request, response, authentication);
     }
 
 }

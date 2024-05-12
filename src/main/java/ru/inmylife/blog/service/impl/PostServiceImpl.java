@@ -1,16 +1,16 @@
 package ru.inmylife.blog.service.impl;
 
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import ru.inmylife.blog.dto.block.Block;
 import ru.inmylife.blog.dto.block.BlockData;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.entity.Post;
 import ru.inmylife.blog.entity.User;
+import ru.inmylife.blog.exception.BusinessException;
+import ru.inmylife.blog.exception.PostNotFoundException;
 import ru.inmylife.blog.exception.TitleNotFoundException;
 import ru.inmylife.blog.exception.TopicNotFoundException;
 import ru.inmylife.blog.repository.PostJpaRepository;
@@ -36,33 +36,24 @@ public class PostServiceImpl implements PostService {
     private final LinkService linkService;
 
     @Override
-    public Mono<PostData> findPost(String linkText) {
-        return Mono
-            .fromCallable(() -> postJpaRepository
-                .findPostByLinkText(linkText)
-                .map(this::mapPost))
-            .subscribeOn(Schedulers.boundedElastic())
-            .flatMap(Mono::justOrEmpty);
+    public PostData findPost(String linkText) {
+        return postJpaRepository.findPostByLinkText(linkText)
+            .map(this::mapPost)
+            .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
-    public Flux<PostData> getPosts(Mono<User> user) {
-        return Mono
-            .fromCallable(() -> {
-                val topicsSet = userService.getUserTopics(user).collect(Collectors.toSet())
-                    .defaultIfEmpty(new HashSet<>())
-                    .block();
-
-                return Objects.isNull(topicsSet) || topicsSet.isEmpty()
-                    ? postJpaRepository.findAllByOrderByCreatedDesc()
-                    : postJpaRepository.findAllByTopicInOrderByCreatedDesc(topicsSet);
-
-            })
-            .subscribeOn(Schedulers.boundedElastic())
-            .flatMapMany(Flux::fromIterable)
-            .map(this::mapPost)
-            .map(post -> post.setBlocks(post.getBlocks().stream().limit(2).toList()))
-            .filterWhen(p -> isVisiblePost(p, user));
+    public List<PostData> getPosts(Optional<User> user) {
+        return Try.of(() -> userService.getUserTopics(user))
+            .map(topics -> topics.isEmpty()
+                ? postJpaRepository.findAllByOrderByCreatedDesc()
+                : postJpaRepository.findAllByTopicInOrderByCreatedDesc(topics))
+            .map(posts -> posts.stream()
+                .map(this::mapPost)
+                .map(post -> post.setBlocks(post.getBlocks().stream().limit(2).toList()))
+                .filter(post -> isVisiblePost(post, user))
+                .collect(Collectors.toList()))
+            .getOrElseThrow(e -> new BusinessException("Не удалось загрузить посты", e));
     }
 
     private PostData mapPost(Post post) {
@@ -82,19 +73,20 @@ public class PostServiceImpl implements PostService {
         return dateFormat.format(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
-    private Mono<Boolean> isVisiblePost(PostData post, Mono<User> user) {
+    private boolean isVisiblePost(PostData post, Optional<User> user) {
         return user
             .map(User::getUsername)
-            .filter(username -> post.getUsername().equals(username))
-            .hasElement()
-            .map(isUserPost -> isUserPost || post.getIsPublic());
+            .map(username -> post.getUsername().equals(username))
+            .map(isUserPost -> isUserPost || post.getIsPublic())
+            .orElseGet(post::getIsPublic);
     }
 
     @Override
-    public Mono<Boolean> create(PostData postData, User user) {
+    public void create(PostData postData, User user) {
         val blocks = postData.getBlocks();
         val linkText = getLinkText(blocks);
-        return Mono.fromCallable(() -> postJpaRepository.save(new Post()
+
+        postJpaRepository.save(new Post()
             .setCreated(ZonedDateTime.now())
             .setUser(user)
             .setIsPublic(postData.getIsPublic())
@@ -103,9 +95,7 @@ public class PostServiceImpl implements PostService {
                 .findFirst()
                 .orElseThrow(() -> new TopicNotFoundException("Тема не соответствует темам пользователя")))
             .setBlocks(blocks)
-            .setLinkText(linkText)))
-            .subscribeOn(Schedulers.boundedElastic())
-            .thenReturn(true);
+            .setLinkText(linkText));
     }
 
     private String getLinkText(List<Block> blocks) {

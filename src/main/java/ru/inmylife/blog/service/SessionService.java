@@ -1,14 +1,16 @@
 package ru.inmylife.blog.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 public interface SessionService {
 
-    Mono<Boolean> isAuthenticated();
+    Boolean isAuthenticated();
 
-    Mono<String> getUserName();
+    Optional<String> getUserName();
 
-    Mono<Void> logout(ServerWebExchange exchange, Authentication authentication);
+    void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication);
 }

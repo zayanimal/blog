@@ -4,15 +4,15 @@ import lombok.val;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.reactive.config.ViewResolverRegistry;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.reactive.result.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerResponse;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 @Configuration
-public class WebConfig implements WebFluxConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {

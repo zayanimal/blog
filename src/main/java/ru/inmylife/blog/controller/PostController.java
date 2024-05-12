@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.result.view.Rendering;
-import reactor.core.publisher.Mono;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.inmylife.blog.dto.block.PostData;
 import ru.inmylife.blog.service.PostService;
 import ru.inmylife.blog.service.SessionService;
@@ -23,28 +25,28 @@ public class PostController {
     private final SessionService sessionService;
 
     @GetMapping
-    public Rendering posts() {
+    public String posts(Model model) {
         val user = userService.getCurrentUser();
-        return Rendering.view("public/index")
-            .modelAttribute("isAuth", sessionService.isAuthenticated())
-            .modelAttribute("posts", postService.getPosts(user))
-            .modelAttribute("topics", userService.getUserTopics(user))
-            .build();
+        model.addAttribute("isAuth", sessionService.isAuthenticated());
+        model.addAttribute("posts", postService.getPosts(user));
+        model.addAttribute("topics", userService.getUserTopics(user));
+
+        return "public/index";
     }
 
     @GetMapping("/post/{linkText}")
-    public Rendering post(@PathVariable("linkText") String linkText) {
-        return Rendering.view("public/post")
-            .modelAttribute("isAuth", sessionService.isAuthenticated())
-            .modelAttribute("post", postService.findPost(linkText))
-            .modelAttribute("topics", userService.getUserTopics())
-            .build();
+    public String post(@PathVariable("linkText") String linkText, Model model) {
+        model.addAttribute("isAuth", sessionService.isAuthenticated());
+        model.addAttribute("post", postService.findPost(linkText));
+        model.addAttribute("topics", userService.getUserTopics());
+
+        return "public/post";
     }
 
     @PostMapping("/post/create")
-    public Mono<ResponseEntity<String>> create(@RequestBody PostData postData) {
-        return userService.getCurrentUser()
-            .flatMap(user -> postService.create(postData, user))
-            .thenReturn(ResponseEntity.ok("OK"));
+    public ResponseEntity<String> create(@RequestBody PostData postData) {
+        userService.getCurrentUser().ifPresent(value -> postService.create(postData, value));
+
+        return ResponseEntity.ok("OK");
     }
 }
