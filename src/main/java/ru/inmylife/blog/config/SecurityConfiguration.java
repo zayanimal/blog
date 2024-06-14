@@ -6,14 +6,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import ru.inmylife.blog.exception.UserNotFoundException;
 import ru.inmylife.blog.repository.UserJpaRepository;
 
@@ -22,6 +27,8 @@ import ru.inmylife.blog.repository.UserJpaRepository;
 public class SecurityConfiguration {
 
     private final UserJpaRepository userRepository;
+
+    private final PersistentTokenRepository persistentTokenRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,15 +42,39 @@ public class SecurityConfiguration {
             .logout(logoutSpec -> logoutSpec
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new ForwardLogoutSuccessHandler("/")))
-            .csrf(AbstractHttpConfigurer::disable);
+            .csrf(AbstractHttpConfigurer::disable)
+            .rememberMe(rememberMe -> rememberMe
+                .rememberMeServices(rememberMeServices()));
         return http.build();
+    }
+
+    @Bean
+    public RememberMeAuthenticationFilter rememberMerememberMeFilterFilter() {
+        return new RememberMeAuthenticationFilter(authenticationManager(), rememberMeServices());
+    }
+
+    @Bean
+    public PersistentTokenBasedRememberMeServices rememberMeServices() {
+         return new PersistentTokenBasedRememberMeServices("springRocks", userDetailsService(), persistentTokenRepository);
+    }
+
+    @Bean
+    RememberMeAuthenticationProvider rememberMeAuthenticationProvider() {
+        return new RememberMeAuthenticationProvider("springRocks");
     }
 
     @Bean
     public AuthenticationManager authenticationManager() {
         val authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService((username -> {
+        authProvider.setUserDetailsService(userDetailsService());
+
+        return new ProviderManager(authProvider);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
             val user = userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
@@ -52,9 +83,7 @@ public class SecurityConfiguration {
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .build();
-        }));
-
-        return new ProviderManager(authProvider);
+        };
     }
 
     @Bean
