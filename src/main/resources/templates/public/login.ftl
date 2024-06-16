@@ -18,7 +18,7 @@
                 <input type="password" name="password" id="password" />
 
                 <label class="login__label" for="remember-me">Запомнить меня:</label>
-                <input type="checkbox" name="remember-me" value="remember-me" id="remember-me" checked />
+                <input type="checkbox" name="remember-me" id="remember-me" checked />
 
                 <input class="login__button" name="submit" type="submit" value="Подтвердить" />
             </form>
