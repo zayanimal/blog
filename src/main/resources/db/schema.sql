@@ -14,6 +14,7 @@ create table blog.persistent_logins (
     username varchar(64) not null,
     token varchar(64) not null,
     last_used timestamp not null,
+    device varchar(100),
     constraint pk_persistent_logins primary key (series)
 );
 

@@ -35,5 +35,4 @@ public class SessionServiceImpl implements SessionService {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         logoutHandler.logout(request, response, authentication);
     }
-
 }

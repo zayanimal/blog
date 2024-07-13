@@ -33,4 +33,7 @@ public class Token {
 
     @Column(name = "LAST_USED")
     private Date lastUsed;
+
+    @Column(name = "DEVICE")
+    private String device;
 }

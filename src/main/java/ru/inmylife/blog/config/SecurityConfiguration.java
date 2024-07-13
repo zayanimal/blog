@@ -43,8 +43,7 @@ public class SecurityConfiguration {
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new ForwardLogoutSuccessHandler("/")))
             .csrf(AbstractHttpConfigurer::disable)
-            .rememberMe(rememberMe -> rememberMe
-                .rememberMeServices(rememberMeServices()));
+            .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()));
         return http.build();
     }
 
