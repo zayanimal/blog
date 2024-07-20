@@ -14,14 +14,23 @@
     align-items: center;
   }
 
+  &__user-group {
+    display: flex;
+
+    * + * {
+      padding-left: 4em;
+    }
+  }
+
   h1 {
     font-size: 3em;
     font-family: "NanumGothic", serif;
     color: var(--header-text-color);
+  }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+  a {
+    color: inherit;
+    cursor: default;
+    text-decoration: none;
   }
 }

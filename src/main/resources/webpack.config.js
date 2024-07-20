@@ -7,8 +7,8 @@ module.exports = {
     mode: 'development',
     devtool: 'source-map',
     entry: {
-        'admin/index': './js/admin/index.js',
-        'public/index': './js/public/index.js'
+        'create-post': './js/create-post.js',
+        'index': './js/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'static'),
@@ -40,6 +40,6 @@ module.exports = {
             ]
         }),
         new CleanWebpackPlugin(),
-        new MiniCssExtractPlugin({ filename: '[name].css' })
+        new MiniCssExtractPlugin({ filename: 'index.css' })
     ]
 }

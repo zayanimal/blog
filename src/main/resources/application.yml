@@ -29,6 +29,6 @@ spring:
     suffix: .ftl
 
 disk-client:
-  url: ${YANDEX_DISK_URL}
-  token: ${YANDEX_DISK_TOKEN}
+  url: ${DISK_URL}
+  token: ${DISK_TOKEN}
   path: "disk:/Приложения/blog/"
