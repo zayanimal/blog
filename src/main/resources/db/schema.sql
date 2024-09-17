@@ -1,6 +1,5 @@
 create schema if not exists blog;
 
-drop table if exists blog.persistent_logins;
 drop table if exists blog.user_topic;
 drop sequence if exists blog.topic_seq;
 drop table if exists blog.topic;
@@ -9,7 +8,7 @@ drop index if exists blog.link_text_idx;
 drop table if exists blog.post;
 drop table if exists blog.users;
 
-create table blog.persistent_logins (
+create table if not exists blog.persistent_logins (
     series varchar(64),
     username varchar(64) not null,
     token varchar(64) not null,

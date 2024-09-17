@@ -54,10 +54,22 @@ btn.addEventListener('click', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(Object.assign(res, {
+                body: JSON.stringify(Object.assign({
+                    blocks: [
+                        {
+                            id: 'iUYhfUdf',
+                            type: 'header',
+                            data: {
+                                text: settings.get('title')
+                            }
+                        },
+                        ...res.blocks
+                    ]
+                }, {
                     topic: settings.get('topic'),
                     isPublic: settings.get('is-public') === 'on'
                 }))
             })
         })
+        .then(() => window.location.assign('/'))
 });

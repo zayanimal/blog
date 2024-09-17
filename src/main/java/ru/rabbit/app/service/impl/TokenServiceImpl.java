@@ -32,7 +32,7 @@ public class TokenServiceImpl implements PersistentTokenRepository {
         val device = getDevice();
         val username = token.getUsername();
 
-        log.debug("Пришёл запрос на создание токена, пользователь: {}, устройство: {}", username, device);
+        log.info("Пришёл запрос на создание токена, пользователь: {}, устройство: {}", username, device);
 
         tokenJpaRepository.save(new Token()
             .setId(token.getSeries())
@@ -43,9 +43,11 @@ public class TokenServiceImpl implements PersistentTokenRepository {
     }
 
     @Override
+    @Transactional
     public void updateToken(String series, String tokenValue, Date lastUsed) {
-        log.debug("Пришёл запрос на обновление токена");
-        tokenJpaRepository.updateToken(series, tokenValue, lastUsed, getDevice());
+        val device = getDevice();
+        log.info("Пришёл запрос на обновление токена, устройство: {}", device);
+        tokenJpaRepository.updateToken(series, tokenValue, lastUsed, device);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class TokenServiceImpl implements PersistentTokenRepository {
         val optionalToken = tokenJpaRepository.findById(seriesId);
         if (optionalToken.isPresent()) {
             val token = optionalToken.get();
-            log.debug("Пришёл запрос на получение токена, пользователь: {}, устройство: {}", token.getUsername(), getDevice());
+            log.info("Пришёл запрос на получение токена, пользователь: {}, устройство: {}", token.getUsername(), getDevice());
             return new PersistentRememberMeToken(
                 token.getUsername(),
                 token.getId(),
@@ -67,7 +69,7 @@ public class TokenServiceImpl implements PersistentTokenRepository {
     @Override
     @Transactional
     public void removeUserTokens(String username) {
-        log.debug("Пришёл запрос на удаление токена, пользователь: {}, устройство: {}", username, getDevice());
+        log.info("Пришёл запрос на удаление токена, пользователь: {}, устройство: {}", username, getDevice());
         tokenJpaRepository.deleteAllByUsername(username);
     }
 
